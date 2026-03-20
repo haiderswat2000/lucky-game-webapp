@@ -613,20 +613,29 @@ async function startSpin() {
     return;
   }
 
-  // 2) تحديد القطاع المستهدف بناءً على النتيجة الحقيقية
+  // 2) تحديد القطاع المستهدف + تأثير "كاد يفوز" للخسارة
   const segOptions = { win:[0,3,5], lose:[1,4], retry:[2] };
   const opts = segOptions[data.outcome] || [2];
   const targetSeg = opts[Math.floor(Math.random() * opts.length)];
 
   // حساب زاوية التوقف:
-  // الإبرة في الأعلى (top) تقابل 270° في canvas
-  // منتصف القطاع targetSeg يجب أن يكون عند 270°
-  // المعادلة: (rot - 90) + targetSeg*SA + SA/2 = 270  =>  rot = 360 - (targetSeg+0.5)*SA
-  const targetRot = ((360 - (targetSeg + 0.5) * SA) % 360 + 360) % 360;
-  const curMod    = ((rotation % 360) + 360) % 360;
-  let   diff      = (targetRot - curMod + 360) % 360;
-  if (diff < 45) diff += 360; // ضمان دوران كافٍ قبل التوقف
-  const finalRot  = rotation + 5 * 360 + diff;
+  // rot = 360 - (targetSeg + 0.5) * SA يضع منتصف القطاع عند الإبرة
+  let stopAngle = ((360 - (targetSeg + 0.5) * SA) % 360 + 360) % 360;
+
+  // تأثير "كاد يفوز": للخسارة، أوقف العجلة قريباً من حافة قطاع الفوز المجاور
+  // القطاعات: 0=فوز, 1=خسارة, 2=إعادة, 3=فوز, 4=خسارة, 5=حظ(فوز)
+  // عند الخسارة على قطاع 1: اقترب من حافة قطاع 0 (فوز) = أضف offset صغير
+  // عند الخسارة على قطاع 4: اقترب من حافة قطاع 3 (فوز)
+  if (data.outcome === 'lose') {
+    // أوقف على حافة القطاع (20% من حجم القطاع بعيداً عن المنتصف باتجاه الفوز)
+    const nearMissOffset = SA * 0.30; // 30% من حجم القطاع = قريب جداً من الحافة
+    stopAngle = ((stopAngle + nearMissOffset) % 360 + 360) % 360;
+  }
+
+  const curMod   = ((rotation % 360) + 360) % 360;
+  let   diff     = (stopAngle - curMod + 360) % 360;
+  if (diff < 45) diff += 360;
+  const finalRot = rotation + 5 * 360 + diff;
 
   // 3) تشغيل أنيميشن الدوران للتوقف على القطاع الصحيح
   const duration  = 4000;
