@@ -403,21 +403,56 @@ const CX = cvs.width/2, CY = cvs.height/2, R = CX - 5;
 function drawWheel(rot) {
   ctx.clearRect(0,0,cvs.width,cvs.height);
   const off = (rot - 90) * Math.PI / 180;
+
+  // ===== رسم القطاعات =====
   SEGS.forEach((s,i) => {
     const st = off + i * SA * Math.PI/180;
     const en = st + SA * Math.PI/180;
-    const g = ctx.createRadialGradient(CX,CY,0,CX,CY,R);
-    g.addColorStop(0.4, s.light); g.addColorStop(1, s.color);
+
+    // تدرج لوني
+    const g = ctx.createRadialGradient(CX,CY,R*0.15,CX,CY,R);
+    g.addColorStop(0, s.light);
+    g.addColorStop(1, s.color);
     ctx.beginPath(); ctx.moveTo(CX,CY); ctx.arc(CX,CY,R,st,en); ctx.closePath();
     ctx.fillStyle = g; ctx.fill();
-    ctx.strokeStyle='rgba(255,255,255,0.2)'; ctx.lineWidth=2; ctx.stroke();
-    ctx.save(); ctx.translate(CX,CY); ctx.rotate(st + SA*Math.PI/360);
-    ctx.textAlign='right'; ctx.fillStyle='#fff'; ctx.font='bold 12px Arial';
-    ctx.shadowColor='rgba(0,0,0,0.6)'; ctx.shadowBlur=4;
-    ctx.fillText(s.label, R-12, 5); ctx.restore();
+
+    // حدود بيضاء واضحة
+    ctx.strokeStyle='rgba(255,255,255,0.55)';
+    ctx.lineWidth=2.5;
+    ctx.stroke();
   });
+
+  // ===== رسم النصوص =====
+  SEGS.forEach((s,i) => {
+    const midAngle = off + i * SA * Math.PI/180 + (SA/2) * Math.PI/180;
+    const textR = R * 0.68; // موضع النص على بعد 68% من المركز
+
+    ctx.save();
+    ctx.translate(
+      CX + Math.cos(midAngle) * textR,
+      CY + Math.sin(midAngle) * textR
+    );
+    ctx.rotate(midAngle + Math.PI/2); // النص عمودي باتجاه الخارج
+
+    // ظل قوي للوضوح
+    ctx.shadowColor = 'rgba(0,0,0,0.9)';
+    ctx.shadowBlur  = 6;
+    ctx.shadowOffsetX = 1;
+    ctx.shadowOffsetY = 1;
+
+    ctx.fillStyle   = '#ffffff';
+    ctx.font        = 'bold 13px Arial';
+    ctx.textAlign   = 'center';
+    ctx.textBaseline= 'middle';
+    ctx.fillText(s.label, 0, 0);
+    ctx.restore();
+  });
+
+  // ===== الحلقة الخارجية =====
   ctx.beginPath(); ctx.arc(CX,CY,R,0,Math.PI*2);
-  ctx.strokeStyle='rgba(255,210,0,0.5)'; ctx.lineWidth=4; ctx.stroke();
+  ctx.strokeStyle='rgba(255,210,0,0.7)';
+  ctx.lineWidth=5;
+  ctx.stroke();
 }
 drawWheel(0);
 
