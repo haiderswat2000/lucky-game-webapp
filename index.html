@@ -4,6 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
   <title>🎰 لعبة الحظ</title>
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -611,19 +614,19 @@ async function startSpin() {
   }
 
   // 2) تحديد القطاع المستهدف بناءً على النتيجة الحقيقية
-  // win → قطاع 0 أو 3 أو 5 (كلها فوز)
-  // lose → قطاع 1 أو 4
-  // retry → قطاع 2
   const segOptions = { win:[0,3,5], lose:[1,4], retry:[2] };
   const opts = segOptions[data.outcome] || [2];
   const targetSeg = opts[Math.floor(Math.random() * opts.length)];
 
-  // حساب زاوية التوقف الصحيحة (الإبرة في الأعلى = منتصف القطاع)
-  const targetAngle = 360 - (targetSeg + 0.5) * SA;
-  const curMod = rotation % 360;
-  let diff = (targetAngle - curMod + 360) % 360;
-  if (diff < 30) diff += 360; // ضمان دوران كافٍ
-  const finalRot = rotation + 5 * 360 + diff; // 5 دورات كاملة + التوقف الصحيح
+  // حساب زاوية التوقف:
+  // الإبرة في الأعلى (top) تقابل 270° في canvas
+  // منتصف القطاع targetSeg يجب أن يكون عند 270°
+  // المعادلة: (rot - 90) + targetSeg*SA + SA/2 = 270  =>  rot = 360 - (targetSeg+0.5)*SA
+  const targetRot = ((360 - (targetSeg + 0.5) * SA) % 360 + 360) % 360;
+  const curMod    = ((rotation % 360) + 360) % 360;
+  let   diff      = (targetRot - curMod + 360) % 360;
+  if (diff < 45) diff += 360; // ضمان دوران كافٍ قبل التوقف
+  const finalRot  = rotation + 5 * 360 + diff;
 
   // 3) تشغيل أنيميشن الدوران للتوقف على القطاع الصحيح
   const duration  = 4000;
