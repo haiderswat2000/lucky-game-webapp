@@ -476,7 +476,6 @@ async function loadStats() {
 async function startSpin() {
   if (isSpinning) return;
   if (!initData) { showResult('error','⚠️','افتح اللعبة من البوت',''); return; }
-  if (balance < selectedStake) { showResult('error','😕','رصيدك لا يكفي',`تحتاج ${selectedStake.toLocaleString('ar')} نقطة`); return; }
 
   isSpinning = true;
   document.getElementById('spin-btn').disabled = true;
