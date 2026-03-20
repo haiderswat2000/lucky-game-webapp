@@ -519,54 +519,89 @@ async function loadStats() {
   }
 }
 
+// ===== Sound Effects =====
+const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+function playTick() {
+  const o = audioCtx.createOscillator();
+  const g = audioCtx.createGain();
+  o.connect(g); g.connect(audioCtx.destination);
+  o.frequency.value = 600;
+  g.gain.setValueAtTime(0.15, audioCtx.currentTime);
+  g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.05);
+  o.start(); o.stop(audioCtx.currentTime + 0.05);
+}
+
+function playWin() {
+  [523, 659, 784, 1047].forEach((f, i) => {
+    const o = audioCtx.createOscillator();
+    const g = audioCtx.createGain();
+    o.connect(g); g.connect(audioCtx.destination);
+    o.type = 'sine'; o.frequency.value = f;
+    const t = audioCtx.currentTime + i * 0.12;
+    g.gain.setValueAtTime(0.25, t);
+    g.gain.exponentialRampToValueAtTime(0.001, t + 0.3);
+    o.start(t); o.stop(t + 0.3);
+  });
+}
+
+function playLose() {
+  [300, 250].forEach((f, i) => {
+    const o = audioCtx.createOscillator();
+    const g = audioCtx.createGain();
+    o.connect(g); g.connect(audioCtx.destination);
+    o.type = 'sawtooth'; o.frequency.value = f;
+    const t = audioCtx.currentTime + i * 0.2;
+    g.gain.setValueAtTime(0.2, t);
+    g.gain.exponentialRampToValueAtTime(0.001, t + 0.3);
+    o.start(t); o.stop(t + 0.3);
+  });
+}
+
+function playRetry() {
+  const o = audioCtx.createOscillator();
+  const g = audioCtx.createGain();
+  o.connect(g); g.connect(audioCtx.destination);
+  o.type = 'sine'; o.frequency.value = 440;
+  g.gain.setValueAtTime(0.2, audioCtx.currentTime);
+  g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.4);
+  o.start(); o.stop(audioCtx.currentTime + 0.4);
+}
+
 // ===== Spin =====
 async function startSpin() {
   if (isSpinning) return;
   if (!initData) { showResult('error','⚠️','افتح اللعبة من البوت',''); return; }
+
+  // تفعيل AudioContext بعد تفاعل المستخدم
+  if (audioCtx.state === 'suspended') audioCtx.resume();
 
   isSpinning = true;
   document.getElementById('spin-btn').disabled = true;
   document.getElementById('result-inline').classList.remove('show','win-res','lose-res','retry-res');
   cvs.classList.add('spinning');
 
-  // Start API call in background
-  const playPromise = fetch(`${API}/api/lucky/play`, {
-    method:'POST',
-    headers:{'Content-Type':'application/json'},
-    body: JSON.stringify({ init_data: initData, stake: selectedStake })
-  }).then(r=>r.json()).catch(()=>({error:'network'}));
-
-  // Animate wheel (fake spin while waiting)
-  const spinDeg = 1440 + Math.random()*360;
-  const startRot = rotation;
-  const targetRot = startRot + spinDeg;
-  const duration = 3800;
-  const start = performance.now();
-
-  await new Promise(resolve => {
-    function frame(now) {
-      const p = Math.min((now-start)/duration, 1);
-      const e = 1 - Math.pow(1-p, 4);
-      rotation = startRot + (targetRot - startRot) * e;
-      drawWheel(rotation % 360);
-      if (p < 1) requestAnimationFrame(frame);
-      else resolve();
-    }
-    requestAnimationFrame(frame);
-  });
-
-  cvs.classList.remove('spinning');
-
-  // Get result
-  const data = await playPromise;
+  // 1) جلب النتيجة من الخادم أولاً
+  let data;
+  try {
+    const r = await fetch(`${API}/api/lucky/play`, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ init_data: initData, stake: selectedStake })
+    });
+    data = await r.json();
+  } catch(e) {
+    data = { error: 'network' };
+  }
 
   if (data.error) {
+    cvs.classList.remove('spinning');
     const msgs = {
-      cooldown: ['⏳','انتظر قليلاً','قبل المحاولة التالية'],
+      cooldown:             ['⏳','انتظر قليلاً','قبل المحاولة التالية'],
       insufficient_balance: ['😕','رصيدك لا يكفي','اختر رهاناً أقل'],
-      unauthorized: ['🔒','غير مصرح','افتح اللعبة من البوت'],
-      tx_failed: ['⚠️','خطأ في العملية','حاول لاحقاً'],
-      network: ['📡','خطأ في الاتصال','تحقق من الإنترنت'],
+      unauthorized:         ['🔒','غير مصرح','افتح اللعبة من البوت'],
+      tx_failed:            ['⚠️','خطأ في العملية','حاول لاحقاً'],
+      network:              ['📡','خطأ في الاتصال','تحقق من الإنترنت'],
     };
     const [ic,ti,su] = msgs[data.error] || ['⚠️','خطأ','حاول لاحقاً'];
     showResult('error', ic, ti, su);
@@ -575,15 +610,47 @@ async function startSpin() {
     return;
   }
 
-  // Snap wheel to correct segment
-  const segMap = { win:0, lose:1, retry:2 };
-  const seg = segMap[data.outcome] ?? 2;
-  const snapAngle = 360 - (seg * SA + SA/2);
-  const snaps = Math.ceil(rotation/360)*360 + snapAngle;
-  rotation = snaps;
-  drawWheel(snaps % 360);
+  // 2) تحديد القطاع المستهدف بناءً على النتيجة الحقيقية
+  // win → قطاع 0 أو 3 أو 5 (كلها فوز)
+  // lose → قطاع 1 أو 4
+  // retry → قطاع 2
+  const segOptions = { win:[0,3,5], lose:[1,4], retry:[2] };
+  const opts = segOptions[data.outcome] || [2];
+  const targetSeg = opts[Math.floor(Math.random() * opts.length)];
 
-  // Update balance
+  // حساب زاوية التوقف الصحيحة (الإبرة في الأعلى = منتصف القطاع)
+  const targetAngle = 360 - (targetSeg + 0.5) * SA;
+  const curMod = rotation % 360;
+  let diff = (targetAngle - curMod + 360) % 360;
+  if (diff < 30) diff += 360; // ضمان دوران كافٍ
+  const finalRot = rotation + 5 * 360 + diff; // 5 دورات كاملة + التوقف الصحيح
+
+  // 3) تشغيل أنيميشن الدوران للتوقف على القطاع الصحيح
+  const duration  = 4000;
+  const startTime = performance.now();
+  const startRot  = rotation;
+  let lastSeg     = -1;
+
+  await new Promise(resolve => {
+    function frame(now) {
+      const p = Math.min((now - startTime) / duration, 1);
+      const e = 1 - Math.pow(1 - p, 4); // ease-out quart
+      rotation = startRot + (finalRot - startRot) * e;
+      drawWheel(rotation % 360);
+
+      // صوت نقرة عند تجاوز كل قطاع
+      const curSegNow = Math.floor(((rotation % 360) / 360) * N);
+      if (curSegNow !== lastSeg) { playTick(); lastSeg = curSegNow; }
+
+      if (p < 1) requestAnimationFrame(frame);
+      else { rotation = finalRot; drawWheel(rotation % 360); resolve(); }
+    }
+    requestAnimationFrame(frame);
+  });
+
+  cvs.classList.remove('spinning');
+
+  // 4) تحديث الرصيد والإحصائيات
   updateBalanceUI(data.new_balance);
   plays++;
   if (data.outcome==='win')  wins++;
@@ -592,13 +659,16 @@ async function startSpin() {
   document.getElementById('st-wins').textContent  = wins;
   document.getElementById('st-loses').textContent = loses;
 
-  // Show result
+  // 5) عرض النتيجة + صوت
   if (data.outcome==='win') {
+    playWin();
     showResult('win','🎉','مبروك! فزت 🏆',`ربحت +${data.earned.toLocaleString('ar')} نقطة`);
     launchConfetti();
   } else if (data.outcome==='lose') {
+    playLose();
     showResult('lose','😢','للأسف خسرت ❌',`خسرت ${Math.abs(data.earned).toLocaleString('ar')} نقطة`);
   } else {
+    playRetry();
     showResult('retry','🔁','إعادة!','لا خصم ولا إضافة — جرّب مجدداً');
   }
 
