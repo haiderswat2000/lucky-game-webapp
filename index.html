@@ -17,13 +17,13 @@
       flex-direction: column;
       align-items: center;
       overflow-x: hidden;
-      padding-bottom: 30px;
+      padding-bottom: 40px;
     }
 
     /* ===== Header ===== */
     .header {
       width: 100%;
-      padding: 18px 20px 10px;
+      padding: 16px 20px 12px;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -35,208 +35,231 @@
     .balance-box {
       background: linear-gradient(135deg, #f7971e, #ffd200);
       color: #1a1a1a;
-      padding: 6px 14px;
+      padding: 7px 16px;
       border-radius: 20px;
-      font-weight: 700;
+      font-weight: 800;
       font-size: 14px;
+      cursor: pointer;
+      transition: transform 0.2s;
     }
+    .balance-box:active { transform: scale(0.95); }
+
+    /* ===== Tabs ===== */
+    .tabs {
+      display: flex;
+      width: 92%;
+      max-width: 380px;
+      margin-top: 16px;
+      background: rgba(255,255,255,0.06);
+      border-radius: 14px;
+      padding: 4px;
+      gap: 4px;
+    }
+    .tab-btn {
+      flex: 1;
+      padding: 9px;
+      border: none;
+      border-radius: 11px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+      background: transparent;
+      color: rgba(255,255,255,0.5);
+    }
+    .tab-btn.active {
+      background: linear-gradient(135deg, #f7971e, #ffd200);
+      color: #1a1a1a;
+      box-shadow: 0 2px 10px rgba(247,151,30,0.4);
+    }
+
+    /* ===== Tab panels ===== */
+    .panel { display: none; width: 100%; flex-direction: column; align-items: center; }
+    .panel.show { display: flex; }
 
     /* ===== Particles ===== */
-    #particles { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
-
-    /* ===== Main content ===== */
+    #particles { position: fixed; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:0; }
     .content { position: relative; z-index: 1; width: 100%; display: flex; flex-direction: column; align-items: center; }
 
-    /* ===== Wheel container ===== */
-    .wheel-section {
-      margin-top: 24px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-
-    .wheel-wrapper {
-      position: relative;
-      width: 280px;
-      height: 280px;
-    }
-
-    /* الإبرة */
+    /* ===== Wheel ===== */
+    .wheel-section { margin-top: 20px; display: flex; flex-direction: column; align-items: center; }
+    .wheel-wrapper { position: relative; width: 260px; height: 260px; }
     .needle {
-      position: absolute;
-      top: -18px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 0;
-      height: 0;
-      border-left: 12px solid transparent;
-      border-right: 12px solid transparent;
-      border-top: 30px solid #ffd200;
+      position: absolute; top: -16px; left: 50%; transform: translateX(-50%);
+      width: 0; height: 0;
+      border-left: 11px solid transparent;
+      border-right: 11px solid transparent;
+      border-top: 28px solid #ffd200;
       filter: drop-shadow(0 0 6px #ffd200);
       z-index: 10;
     }
-
     #wheel {
-      width: 280px;
-      height: 280px;
+      width: 260px; height: 260px;
       border-radius: 50%;
-      border: 6px solid rgba(255,255,255,0.2);
-      box-shadow: 0 0 30px rgba(255,210,0,0.3), inset 0 0 20px rgba(0,0,0,0.3);
-      transition: transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99);
-      position: relative;
+      box-shadow: 0 0 30px rgba(255,210,0,0.25), inset 0 0 20px rgba(0,0,0,0.3);
     }
-
-    /* مركز العجلة */
     .wheel-center {
-      position: absolute;
-      top: 50%; left: 50%;
-      transform: translate(-50%, -50%);
-      width: 50px; height: 50px;
+      position: absolute; top:50%; left:50%; transform: translate(-50%,-50%);
+      width: 46px; height: 46px;
       background: radial-gradient(circle, #ffd200, #f7971e);
       border-radius: 50%;
       display: flex; align-items: center; justify-content: center;
-      font-size: 22px;
+      font-size: 20px;
       box-shadow: 0 0 15px rgba(255,210,0,0.8);
       z-index: 5;
     }
 
-    /* ===== Stake section ===== */
-    .stake-section {
-      margin-top: 24px;
-      width: 92%;
-      max-width: 380px;
+    /* ===== Stats mini row ===== */
+    .stats-row {
+      display: flex; gap: 10px;
+      margin-top: 16px;
+      width: 92%; max-width: 380px;
     }
-    .stake-label {
+    .stat-box {
+      flex: 1;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px;
+      padding: 10px 6px;
       text-align: center;
-      font-size: 14px;
-      color: rgba(255,255,255,0.6);
-      margin-bottom: 12px;
     }
-    .stakes-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
-    }
+    .stat-label { font-size: 10px; color: rgba(255,255,255,0.5); }
+    .stat-value { font-size: 15px; font-weight: 700; margin-top: 3px; }
+
+    /* ===== Stake picker ===== */
+    .stake-section { margin-top: 18px; width: 92%; max-width: 380px; }
+    .stake-label { text-align: center; font-size: 13px; color: rgba(255,255,255,0.55); margin-bottom: 10px; }
+    .stakes-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
     .stake-btn {
-      background: rgba(255,255,255,0.08);
-      border: 2px solid rgba(255,255,255,0.15);
-      border-radius: 14px;
+      background: rgba(255,255,255,0.07);
+      border: 2px solid rgba(255,255,255,0.13);
+      border-radius: 12px;
       color: #fff;
-      font-size: 15px;
+      font-size: 14px;
       font-weight: 700;
-      padding: 12px 8px;
+      padding: 11px 6px;
       cursor: pointer;
       transition: all 0.2s;
-      position: relative;
-      overflow: hidden;
+      position: relative; overflow: hidden;
     }
-    .stake-btn::before {
-      content: '';
-      position: absolute; inset: 0;
-      background: linear-gradient(135deg, rgba(255,210,0,0.15), rgba(255,210,0,0));
-      opacity: 0;
-      transition: opacity 0.2s;
-    }
-    .stake-btn:hover::before, .stake-btn.active::before { opacity: 1; }
     .stake-btn.active {
       border-color: #ffd200;
-      box-shadow: 0 0 15px rgba(255,210,0,0.4);
-      transform: scale(1.05);
+      box-shadow: 0 0 14px rgba(255,210,0,0.35);
+      transform: scale(1.04);
     }
-    .stake-btn:active { transform: scale(0.96); }
+    .stake-btn:active { transform: scale(0.95); }
 
     /* ===== Spin button ===== */
     .spin-btn {
-      margin-top: 20px;
-      width: 92%;
-      max-width: 380px;
-      padding: 16px;
-      font-size: 18px;
-      font-weight: 800;
-      border: none;
-      border-radius: 18px;
+      margin-top: 16px;
+      width: 92%; max-width: 380px;
+      padding: 15px;
+      font-size: 17px; font-weight: 800;
+      border: none; border-radius: 16px;
       background: linear-gradient(135deg, #f7971e, #ffd200);
       color: #1a1a1a;
       cursor: pointer;
-      box-shadow: 0 4px 20px rgba(247,151,30,0.5);
+      box-shadow: 0 4px 18px rgba(247,151,30,0.45);
       transition: all 0.2s;
-      letter-spacing: 0.5px;
     }
-    .spin-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 25px rgba(247,151,30,0.7); }
+    .spin-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 24px rgba(247,151,30,0.65); }
     .spin-btn:active { transform: scale(0.97); }
     .spin-btn:disabled {
-      background: linear-gradient(135deg, #555, #777);
-      color: #aaa;
-      cursor: not-allowed;
-      box-shadow: none;
-      transform: none;
+      background: linear-gradient(135deg, #444, #666);
+      color: #999; cursor: not-allowed;
+      box-shadow: none; transform: none;
     }
 
-    /* ===== Result popup ===== */
-    .overlay {
+    /* ===== Cooldown bar ===== */
+    .cd-wrap {
+      width: 92%; max-width: 380px;
+      margin-top: 10px; height: 5px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 10px; overflow: hidden;
       display: none;
-      position: fixed; inset: 0;
-      background: rgba(0,0,0,0.7);
-      z-index: 100;
-      align-items: center;
-      justify-content: center;
     }
-    .overlay.show { display: flex; }
+    .cd-bar {
+      height: 100%;
+      background: linear-gradient(90deg, #f7971e, #ffd200);
+      border-radius: 10px; width: 100%;
+      transition: width linear;
+    }
 
-    .result-card {
-      background: linear-gradient(145deg, #1e1e3f, #2d2b55);
-      border: 2px solid rgba(255,255,255,0.15);
-      border-radius: 24px;
-      padding: 32px 28px;
+    /* ===== Result card (inline, not popup) ===== */
+    .result-inline {
+      display: none;
+      width: 92%; max-width: 380px;
+      margin-top: 14px;
+      border-radius: 18px;
+      padding: 20px;
       text-align: center;
-      width: 88%;
-      max-width: 340px;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.6);
-      animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      animation: slideIn 0.35s ease;
     }
-    @keyframes popIn {
-      from { transform: scale(0.5); opacity: 0; }
-      to   { transform: scale(1);   opacity: 1; }
+    @keyframes slideIn {
+      from { transform: translateY(20px); opacity: 0; }
+      to   { transform: translateY(0);    opacity: 1; }
     }
+    .result-inline.win-res  { background: linear-gradient(135deg, rgba(39,174,96,0.25), rgba(46,204,113,0.1)); border: 2px solid #27ae60; }
+    .result-inline.lose-res { background: linear-gradient(135deg, rgba(231,76,60,0.25),  rgba(192,57,43,0.1));  border: 2px solid #e74c3c; }
+    .result-inline.retry-res{ background: linear-gradient(135deg, rgba(52,152,219,0.25), rgba(41,128,185,0.1)); border: 2px solid #3498db; }
+    .result-inline.show { display: block; }
+    .res-icon  { font-size: 50px; }
+    .res-title { font-size: 22px; font-weight: 800; margin: 6px 0 4px; }
+    .res-sub   { font-size: 14px; color: rgba(255,255,255,0.7); }
 
-    .result-icon { font-size: 64px; margin-bottom: 12px; display: block; }
-    .result-title { font-size: 26px; font-weight: 800; margin-bottom: 8px; }
-    .result-sub   { font-size: 15px; color: rgba(255,255,255,0.7); margin-bottom: 20px; }
-    .result-balance {
-      background: rgba(255,255,255,0.08);
-      border-radius: 12px;
-      padding: 12px;
-      font-size: 14px;
-      margin-bottom: 20px;
+    /* ===== Stats panel ===== */
+    .stats-panel { width: 92%; max-width: 380px; margin-top: 16px; }
+    .stats-header {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 12px;
     }
-    .result-balance span { font-weight: 700; font-size: 18px; color: #ffd200; }
-
-    .result-close {
-      width: 100%;
-      padding: 13px;
-      font-size: 16px;
-      font-weight: 700;
-      border: none;
-      border-radius: 14px;
-      cursor: pointer;
+    .stats-header h3 { font-size: 16px; font-weight: 700; }
+    .refresh-btn {
+      background: rgba(255,255,255,0.1);
+      border: none; border-radius: 10px;
+      color: #fff; padding: 6px 12px;
+      font-size: 12px; cursor: pointer;
       transition: all 0.2s;
     }
-    .result-close:active { transform: scale(0.96); }
+    .refresh-btn:active { transform: scale(0.95); }
 
-    /* ===== Win / Lose / Retry colors ===== */
-    .win-card  { border-color: #27ae60; }
-    .lose-card { border-color: #e74c3c; }
-    .retry-card { border-color: #3498db; }
+    .big-stat {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 14px;
+      padding: 16px;
+      text-align: center;
+      margin-bottom: 14px;
+    }
+    .big-stat-num { font-size: 36px; font-weight: 800; color: #ffd200; }
+    .big-stat-lbl { font-size: 13px; color: rgba(255,255,255,0.6); margin-top: 2px; }
 
-    .win-close  { background: linear-gradient(135deg, #27ae60, #2ecc71); color: #fff; }
-    .lose-close { background: linear-gradient(135deg, #c0392b, #e74c3c); color: #fff; }
-    .retry-close { background: linear-gradient(135deg, #2980b9, #3498db); color: #fff; }
+    .winners-list { display: flex; flex-direction: column; gap: 8px; }
+    .winner-item {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 12px;
+      padding: 12px 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .winner-rank { font-size: 18px; width: 30px; }
+    .winner-id   { font-size: 13px; color: rgba(255,255,255,0.6); flex: 1; }
+    .winner-pts  { font-size: 14px; font-weight: 700; color: #2ecc71; }
+
+    .loading-txt { text-align: center; color: rgba(255,255,255,0.4); padding: 30px; font-size: 14px; }
+
+    /* ===== Spinning glow ===== */
+    .spinning { animation: glowRing 0.4s ease-in-out infinite alternate; }
+    @keyframes glowRing {
+      from { filter: drop-shadow(0 0 10px rgba(255,210,0,0.3)); }
+      to   { filter: drop-shadow(0 0 30px rgba(255,210,0,0.9)); }
+    }
 
     /* ===== Confetti ===== */
     .confetti-piece {
-      position: fixed;
-      width: 10px; height: 14px;
-      top: -20px;
+      position: fixed; width: 10px; height: 14px; top: -20px;
       border-radius: 2px;
       animation: confettiFall linear forwards;
       z-index: 200;
@@ -245,444 +268,363 @@
       0%   { transform: translateY(0) rotate(0deg); opacity: 1; }
       100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
     }
-
-    /* ===== Cooldown bar ===== */
-    .cooldown-bar-wrap {
-      width: 92%; max-width: 380px;
-      margin-top: 12px;
-      height: 6px;
-      background: rgba(255,255,255,0.1);
-      border-radius: 10px;
-      overflow: hidden;
-      display: none;
-    }
-    .cooldown-bar {
-      height: 100%;
-      background: linear-gradient(90deg, #f7971e, #ffd200);
-      border-radius: 10px;
-      width: 100%;
-      transition: width linear;
-    }
-
-    /* ===== Stats footer ===== */
-    .stats-row {
-      display: flex;
-      gap: 12px;
-      margin-top: 20px;
-      width: 92%; max-width: 380px;
-    }
-    .stat-box {
-      flex: 1;
-      background: rgba(255,255,255,0.06);
-      border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 14px;
-      padding: 12px 8px;
-      text-align: center;
-    }
-    .stat-label { font-size: 11px; color: rgba(255,255,255,0.5); }
-    .stat-value { font-size: 16px; font-weight: 700; margin-top: 4px; }
-
-    /* ===== Spin ring glow ===== */
-    .spinning { animation: glowRing 0.4s ease-in-out infinite alternate; }
-    @keyframes glowRing {
-      from { box-shadow: 0 0 20px rgba(255,210,0,0.3); }
-      to   { box-shadow: 0 0 50px rgba(255,210,0,0.9), 0 0 80px rgba(255,150,0,0.5); }
-    }
   </style>
 </head>
 <body>
 
-<!-- Particles canvas -->
 <canvas id="particles"></canvas>
 
 <!-- Header -->
 <div class="header">
   <div class="header-title">🎰 لعبة الحظ</div>
-  <div class="balance-box" id="balance-display">⏳ تحميل...</div>
+  <div class="balance-box" id="balance-display" onclick="refreshBalance()">⏳ تحميل...</div>
 </div>
 
 <div class="content">
 
-  <!-- Wheel -->
-  <div class="wheel-section">
-    <div class="wheel-wrapper">
-      <div class="needle"></div>
-      <canvas id="wheel" width="280" height="280"></canvas>
-      <div class="wheel-center">🎯</div>
+  <!-- Tabs -->
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('game')">🎮 اللعبة</button>
+    <button class="tab-btn"       onclick="switchTab('stats')">📊 الإحصائيات</button>
+  </div>
+
+  <!-- ===== GAME PANEL ===== -->
+  <div class="panel show" id="panel-game">
+
+    <!-- Wheel -->
+    <div class="wheel-section">
+      <div class="wheel-wrapper">
+        <div class="needle"></div>
+        <canvas id="wheel" width="260" height="260"></canvas>
+        <div class="wheel-center">🎯</div>
+      </div>
+    </div>
+
+    <!-- Mini stats -->
+    <div class="stats-row">
+      <div class="stat-box">
+        <div class="stat-label">الجولات</div>
+        <div class="stat-value" id="st-plays">0</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-label">الفوز</div>
+        <div class="stat-value" style="color:#2ecc71" id="st-wins">0</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-label">الخسارة</div>
+        <div class="stat-value" style="color:#e74c3c" id="st-loses">0</div>
+      </div>
+    </div>
+
+    <!-- Stake -->
+    <div class="stake-section">
+      <div class="stake-label">💰 اختر مبلغ الرهان</div>
+      <div class="stakes-grid" id="stakes-grid"></div>
+    </div>
+
+    <!-- Spin button -->
+    <button class="spin-btn" id="spin-btn" onclick="startSpin()">🎰 ادور العجلة</button>
+
+    <!-- Cooldown bar -->
+    <div class="cd-wrap" id="cd-wrap">
+      <div class="cd-bar" id="cd-bar"></div>
+    </div>
+
+    <!-- Result inline -->
+    <div class="result-inline" id="result-inline">
+      <div class="res-icon" id="res-icon">🎉</div>
+      <div class="res-title" id="res-title">مبروك!</div>
+      <div class="res-sub"   id="res-sub"></div>
+    </div>
+
+  </div>
+
+  <!-- ===== STATS PANEL ===== -->
+  <div class="panel" id="panel-stats">
+    <div class="stats-panel">
+      <div class="stats-header">
+        <h3>📊 إحصائيات المشاركين</h3>
+        <button class="refresh-btn" onclick="loadStats()">🔄 تحديث</button>
+      </div>
+      <div class="big-stat">
+        <div class="big-stat-num" id="stat-participants">-</div>
+        <div class="big-stat-lbl">إجمالي المشاركين في اللعبة</div>
+      </div>
+      <h3 style="font-size:14px; color:rgba(255,255,255,0.7); margin-bottom:10px;">🏆 آخر 10 فائزين</h3>
+      <div class="winners-list" id="winners-list">
+        <div class="loading-txt">⏳ جاري التحميل...</div>
+      </div>
     </div>
   </div>
 
-  <!-- Stats -->
-  <div class="stats-row">
-    <div class="stat-box">
-      <div class="stat-label">الجولات</div>
-      <div class="stat-value" id="stat-plays">0</div>
-    </div>
-    <div class="stat-box">
-      <div class="stat-label">الفوز</div>
-      <div class="stat-value" style="color:#2ecc71" id="stat-wins">0</div>
-    </div>
-    <div class="stat-box">
-      <div class="stat-label">الخسارة</div>
-      <div class="stat-value" style="color:#e74c3c" id="stat-loses">0</div>
-    </div>
-  </div>
-
-  <!-- Stake picker -->
-  <div class="stake-section">
-    <div class="stake-label">اختر مبلغ الرهان 💰</div>
-    <div class="stakes-grid" id="stakes-grid">
-      <!-- generated by JS -->
-    </div>
-  </div>
-
-  <!-- Spin button -->
-  <button class="spin-btn" id="spin-btn" onclick="startSpin()">🎰 ادور العجلة</button>
-
-  <!-- Cooldown bar -->
-  <div class="cooldown-bar-wrap" id="cd-wrap">
-    <div class="cooldown-bar" id="cd-bar"></div>
-  </div>
-
-</div>
-
-<!-- Result overlay -->
-<div class="overlay" id="overlay">
-  <div class="result-card" id="result-card">
-    <span class="result-icon" id="res-icon">🎉</span>
-    <div class="result-title" id="res-title">مبروك!</div>
-    <div class="result-sub"   id="res-sub">ربحت هذه الجولة</div>
-    <div class="result-balance">
-      رصيدك الآن: <span id="res-balance">0</span> نقطة
-    </div>
-    <button class="result-close" id="res-close-btn" onclick="closeResult()">العب مرة أخرى</button>
-  </div>
 </div>
 
 <script>
-// ===== Telegram WebApp setup =====
-const tg = window.Telegram?.WebApp;
-if (tg) { tg.ready(); tg.expand(); }
+// ===== Setup =====
+const tg      = window.Telegram?.WebApp;
+const API     = "https://bot.tota.click";
+const STAKES  = [250, 500, 750, 1000, 5000, 10000];
+const COOLDOWN= 5;
+const MEDALS  = ["🥇","🥈","🥉","4️⃣","5️⃣","6️⃣","7️⃣","8️⃣","9️⃣","🔟"];
 
-// ===== URL params =====
-const params   = new URLSearchParams(location.search);
-const initBalance = parseInt(params.get('balance') || '1000');
-const COOLDOWN    = parseInt(params.get('cooldown') || '5');
+if (tg) { tg.ready(); tg.expand(); tg.setHeaderColor('#0f0c29'); tg.setBackgroundColor('#0f0c29'); }
 
-// ===== State =====
-const STAKES   = [250, 500, 750, 1000, 5000, 10000];
-let selectedStake = 500;
-let balance = initBalance;
-let plays = 0, wins = 0, loses = 0;
-let isSpinning = false;
-let rotation = 0;
+let balance      = 0;
+let selectedStake= 500;
+let isSpinning   = false;
+let rotation     = 0;
+let plays=0, wins=0, loses=0;
+const initData   = tg?.initData || "";
 
-// ===== Segments =====
-const SEGMENTS = [
-  { label: '🏆 فوز',     color: '#27ae60', light: '#2ecc71' },
-  { label: '❌ خسارة',   color: '#c0392b', light: '#e74c3c' },
-  { label: '🔁 إعادة',   color: '#2980b9', light: '#3498db' },
-  { label: '🏆 فوز',     color: '#1e8449', light: '#27ae60' },
-  { label: '❌ خسارة',   color: '#922b21', light: '#c0392b' },
-  { label: '✨ مكافأة',  color: '#d4ac0d', light: '#ffd200' },
+// ===== Tabs =====
+function switchTab(name) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('show'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('panel-' + name).classList.add('show');
+  event.currentTarget.classList.add('active');
+  if (name === 'stats') loadStats();
+}
+
+// ===== Wheel segments =====
+const SEGS = [
+  { label:'🏆 فوز',    color:'#1e8449', light:'#27ae60' },
+  { label:'❌ خسارة',  color:'#922b21', light:'#c0392b' },
+  { label:'🔁 إعادة', color:'#1a5276', light:'#2980b9' },
+  { label:'🏆 فوز',   color:'#27ae60', light:'#2ecc71' },
+  { label:'❌ خسارة', color:'#c0392b', light:'#e74c3c' },
+  { label:'✨ حظ',    color:'#b7950b', light:'#ffd200' },
 ];
-const SEG_COUNT = SEGMENTS.length;
-const SEG_ANGLE = 360 / SEG_COUNT;
-
-// ===== Draw wheel =====
-const canvas = document.getElementById('wheel');
-const ctx = canvas.getContext('2d');
-const CX = canvas.width / 2, CY = canvas.height / 2, R = CX - 6;
+const N = SEGS.length;
+const SA = 360 / N;
+const cvs = document.getElementById('wheel');
+const ctx = cvs.getContext('2d');
+const CX = cvs.width/2, CY = cvs.height/2, R = CX - 5;
 
 function drawWheel(rot) {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  const startOffset = (rot - 90) * Math.PI / 180;
-
-  SEGMENTS.forEach((seg, i) => {
-    const start = startOffset + i * SEG_ANGLE * Math.PI / 180;
-    const end   = start + SEG_ANGLE * Math.PI / 180;
-
-    // Segment fill
-    const grad = ctx.createRadialGradient(CX, CY, 0, CX, CY, R);
-    grad.addColorStop(0.4, seg.light);
-    grad.addColorStop(1,   seg.color);
-    ctx.beginPath();
-    ctx.moveTo(CX, CY);
-    ctx.arc(CX, CY, R, start, end);
-    ctx.closePath();
-    ctx.fillStyle = grad;
-    ctx.fill();
-
-    // Border
-    ctx.strokeStyle = 'rgba(255,255,255,0.2)';
-    ctx.lineWidth = 2;
-    ctx.stroke();
-
-    // Label
-    ctx.save();
-    ctx.translate(CX, CY);
-    ctx.rotate(start + SEG_ANGLE * Math.PI / 360);
-    ctx.textAlign = 'right';
-    ctx.fillStyle = '#fff';
-    ctx.font = 'bold 13px Arial';
-    ctx.shadowColor = 'rgba(0,0,0,0.6)';
-    ctx.shadowBlur = 4;
-    ctx.fillText(seg.label, R - 14, 5);
-    ctx.restore();
+  ctx.clearRect(0,0,cvs.width,cvs.height);
+  const off = (rot - 90) * Math.PI / 180;
+  SEGS.forEach((s,i) => {
+    const st = off + i * SA * Math.PI/180;
+    const en = st + SA * Math.PI/180;
+    const g = ctx.createRadialGradient(CX,CY,0,CX,CY,R);
+    g.addColorStop(0.4, s.light); g.addColorStop(1, s.color);
+    ctx.beginPath(); ctx.moveTo(CX,CY); ctx.arc(CX,CY,R,st,en); ctx.closePath();
+    ctx.fillStyle = g; ctx.fill();
+    ctx.strokeStyle='rgba(255,255,255,0.2)'; ctx.lineWidth=2; ctx.stroke();
+    ctx.save(); ctx.translate(CX,CY); ctx.rotate(st + SA*Math.PI/360);
+    ctx.textAlign='right'; ctx.fillStyle='#fff'; ctx.font='bold 12px Arial';
+    ctx.shadowColor='rgba(0,0,0,0.6)'; ctx.shadowBlur=4;
+    ctx.fillText(s.label, R-12, 5); ctx.restore();
   });
-
-  // Outer ring
-  ctx.beginPath();
-  ctx.arc(CX, CY, R, 0, Math.PI * 2);
-  ctx.strokeStyle = 'rgba(255,210,0,0.6)';
-  ctx.lineWidth = 5;
-  ctx.stroke();
+  ctx.beginPath(); ctx.arc(CX,CY,R,0,Math.PI*2);
+  ctx.strokeStyle='rgba(255,210,0,0.5)'; ctx.lineWidth=4; ctx.stroke();
 }
-
 drawWheel(0);
 
-// ===== Build stakes =====
+// ===== Stakes buttons =====
 const grid = document.getElementById('stakes-grid');
 STAKES.forEach(s => {
-  const btn = document.createElement('button');
-  btn.className = 'stake-btn' + (s === selectedStake ? ' active' : '');
-  btn.textContent = s >= 1000 ? (s/1000)+'K' : s;
-  btn.onclick = () => {
-    document.querySelectorAll('.stake-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    selectedStake = s;
+  const b = document.createElement('button');
+  b.className = 'stake-btn' + (s===selectedStake?' active':'');
+  b.textContent = s >= 1000 ? (s/1000)+'K' : s;
+  b.onclick = () => {
+    document.querySelectorAll('.stake-btn').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active'); selectedStake = s;
   };
-  grid.appendChild(btn);
+  grid.appendChild(b);
 });
 
-// ===== Update UI =====
-function updateBalance() {
-  document.getElementById('balance-display').textContent = `💰 ${balance.toLocaleString('ar')}`;
+// ===== Balance =====
+function updateBalanceUI(v) {
+  balance = v;
+  document.getElementById('balance-display').textContent = '💰 ' + v.toLocaleString('ar');
 }
-function updateStats() {
-  document.getElementById('stat-plays').textContent  = plays;
-  document.getElementById('stat-wins').textContent   = wins;
-  document.getElementById('stat-loses').textContent  = loses;
+async function refreshBalance() {
+  if (!initData) return;
+  try {
+    const r = await fetch(`${API}/api/lucky/balance?init_data=${encodeURIComponent(initData)}`);
+    const d = await r.json();
+    if (d.balance !== undefined) updateBalanceUI(d.balance);
+  } catch(e) {}
 }
-updateBalance();
+refreshBalance();
 
-// ===== Determine outcome from server OR local simulation =====
-function determineOutcome(stake) {
-  // إرسال للبوت وانتظار النتيجة في الواقع — هنا نحاكي
-  const rand = Math.random();
-  if (rand < 0.12)  return 'win';
-  if (rand < 0.15)  return 'retry';
-  return 'lose';
+// ===== Stats =====
+async function loadStats() {
+  document.getElementById('winners-list').innerHTML = '<div class="loading-txt">⏳ جاري التحميل...</div>';
+  try {
+    const r = await fetch(`${API}/api/lucky/stats`);
+    const d = await r.json();
+    document.getElementById('stat-participants').textContent = (d.participants||0).toLocaleString('ar');
+    const list = document.getElementById('winners-list');
+    if (!d.last10 || d.last10.length === 0) {
+      list.innerHTML = '<div class="loading-txt">لا يوجد فائزون بعد</div>';
+      return;
+    }
+    list.innerHTML = d.last10.map((w,i) => `
+      <div class="winner-item">
+        <span class="winner-rank">${MEDALS[i]||'#'+(i+1)}</span>
+        <span class="winner-id">${w.uid}</span>
+        <span class="winner-pts">+${w.total_won.toLocaleString('ar')} نقطة</span>
+      </div>`).join('');
+  } catch(e) {
+    document.getElementById('winners-list').innerHTML = '<div class="loading-txt">⚠️ تعذّر التحميل</div>';
+  }
 }
 
 // ===== Spin =====
 async function startSpin() {
   if (isSpinning) return;
-  if (balance < selectedStake) {
-    showToast('رصيدك لا يكفي لهذا الرهان! 😕');
-    return;
-  }
+  if (!initData) { showResult('error','⚠️','افتح اللعبة من البوت',''); return; }
+  if (balance < selectedStake) { showResult('error','😕','رصيدك لا يكفي',`تحتاج ${selectedStake.toLocaleString('ar')} نقطة`); return; }
 
   isSpinning = true;
   document.getElementById('spin-btn').disabled = true;
-  canvas.classList.add('spinning');
+  document.getElementById('result-inline').classList.remove('show','win-res','lose-res','retry-res');
+  cvs.classList.add('spinning');
 
-  // Determine outcome
-  const outcome = determineOutcome(selectedStake);
+  // Start API call in background
+  const playPromise = fetch(`${API}/api/lucky/play`, {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({ init_data: initData, stake: selectedStake })
+  }).then(r=>r.json()).catch(()=>({error:'network'}));
 
-  // Map outcome to target segment index
-  const targetMap = { win: 0, lose: 1, retry: 2 };
-  const targetSeg = targetMap[outcome] ?? 2;
-
-  // Calculate final rotation: multiple full spins + land on target
-  const targetAngle = 360 - (targetSeg * SEG_ANGLE + SEG_ANGLE / 2);
-  const spins = 5 + Math.floor(Math.random() * 4);
-  const finalRot = rotation + spins * 360 + ((targetAngle - rotation % 360 + 360) % 360);
-
-  // Animate
-  const duration = 4000;
-  const start = performance.now();
+  // Animate wheel (fake spin while waiting)
+  const spinDeg = 1440 + Math.random()*360;
   const startRot = rotation;
+  const targetRot = startRot + spinDeg;
+  const duration = 3800;
+  const start = performance.now();
 
-  function animate(now) {
-    const elapsed = now - start;
-    const progress = Math.min(elapsed / duration, 1);
-    const ease = 1 - Math.pow(1 - progress, 4); // ease-out quart
-    const current = startRot + (finalRot - startRot) * ease;
-    rotation = current;
-    drawWheel(current % 360);
-
-    if (progress < 1) {
-      requestAnimationFrame(animate);
-    } else {
-      rotation = finalRot;
-      canvas.classList.remove('spinning');
-      onSpinEnd(outcome);
+  await new Promise(resolve => {
+    function frame(now) {
+      const p = Math.min((now-start)/duration, 1);
+      const e = 1 - Math.pow(1-p, 4);
+      rotation = startRot + (targetRot - startRot) * e;
+      drawWheel(rotation % 360);
+      if (p < 1) requestAnimationFrame(frame);
+      else resolve();
     }
-  }
-  requestAnimationFrame(animate);
+    requestAnimationFrame(frame);
+  });
 
-  // Send to bot (if in Telegram)
-  if (tg) {
-    tg.sendData(JSON.stringify({ action: 'play', stake: selectedStake }));
-  }
-}
+  cvs.classList.remove('spinning');
 
-function onSpinEnd(outcome) {
+  // Get result
+  const data = await playPromise;
+
+  if (data.error) {
+    const msgs = {
+      cooldown: ['⏳','انتظر قليلاً','قبل المحاولة التالية'],
+      insufficient_balance: ['😕','رصيدك لا يكفي','اختر رهاناً أقل'],
+      unauthorized: ['🔒','غير مصرح','افتح اللعبة من البوت'],
+      tx_failed: ['⚠️','خطأ في العملية','حاول لاحقاً'],
+      network: ['📡','خطأ في الاتصال','تحقق من الإنترنت'],
+    };
+    const [ic,ti,su] = msgs[data.error] || ['⚠️','خطأ','حاول لاحقاً'];
+    showResult('error', ic, ti, su);
+    isSpinning = false;
+    document.getElementById('spin-btn').disabled = false;
+    return;
+  }
+
+  // Snap wheel to correct segment
+  const segMap = { win:0, lose:1, retry:2 };
+  const seg = segMap[data.outcome] ?? 2;
+  const snapAngle = 360 - (seg * SA + SA/2);
+  const snaps = Math.ceil(rotation/360)*360 + snapAngle;
+  rotation = snaps;
+  drawWheel(snaps % 360);
+
+  // Update balance
+  updateBalanceUI(data.new_balance);
   plays++;
-  let newBalance = balance;
-  let earned = 0;
+  if (data.outcome==='win')  wins++;
+  if (data.outcome==='lose') loses++;
+  document.getElementById('st-plays').textContent = plays;
+  document.getElementById('st-wins').textContent  = wins;
+  document.getElementById('st-loses').textContent = loses;
 
-  if (outcome === 'win') {
-    newBalance += selectedStake;
-    earned = +selectedStake;
-    wins++;
-    showResult('win', newBalance, earned);
+  // Show result
+  if (data.outcome==='win') {
+    showResult('win','🎉','مبروك! فزت 🏆',`ربحت +${data.earned.toLocaleString('ar')} نقطة`);
     launchConfetti();
-  } else if (outcome === 'lose') {
-    newBalance -= selectedStake;
-    earned = -selectedStake;
-    loses++;
-    showResult('lose', newBalance, earned);
+  } else if (data.outcome==='lose') {
+    showResult('lose','😢','للأسف خسرت ❌',`خسرت ${Math.abs(data.earned).toLocaleString('ar')} نقطة`);
   } else {
-    showResult('retry', newBalance, 0);
+    showResult('retry','🔁','إعادة!','لا خصم ولا إضافة — جرّب مجدداً');
   }
 
-  balance = newBalance;
-  updateBalance();
-  updateStats();
   startCooldown();
 }
 
-// ===== Result popup =====
-function showResult(type, newBal, earned) {
-  const card    = document.getElementById('result-card');
-  const icon    = document.getElementById('res-icon');
-  const title   = document.getElementById('res-title');
-  const sub     = document.getElementById('res-sub');
-  const balEl   = document.getElementById('res-balance');
-  const closeBtn= document.getElementById('res-close-btn');
-
-  card.className = 'result-card';
-
-  if (type === 'win') {
-    card.classList.add('win-card');
-    icon.textContent  = '🎉';
-    title.textContent = 'مبروك! فزت 🏆';
-    sub.textContent   = `ربحت +${earned.toLocaleString('ar')} نقطة`;
-    closeBtn.className = 'result-close win-close';
-  } else if (type === 'lose') {
-    card.classList.add('lose-card');
-    icon.textContent  = '😢';
-    title.textContent = 'للأسف خسرت ❌';
-    sub.textContent   = `خسرت ${Math.abs(earned).toLocaleString('ar')} نقطة`;
-    closeBtn.className = 'result-close lose-close';
-  } else {
-    card.classList.add('retry-card');
-    icon.textContent  = '🔁';
-    title.textContent = 'إعادة!';
-    sub.textContent   = 'لا خصم ولا إضافة — جرّب مرة أخرى';
-    closeBtn.className = 'result-close retry-close';
-  }
-
-  balEl.textContent = newBal.toLocaleString('ar');
-  document.getElementById('overlay').classList.add('show');
+function showResult(type, icon, title, sub) {
+  const el = document.getElementById('result-inline');
+  el.classList.remove('win-res','lose-res','retry-res');
+  if (type==='win')   el.classList.add('win-res');
+  if (type==='lose')  el.classList.add('lose-res');
+  if (type==='retry') el.classList.add('retry-res');
+  document.getElementById('res-icon').textContent  = icon;
+  document.getElementById('res-title').textContent = title;
+  document.getElementById('res-sub').textContent   = sub;
+  el.classList.add('show');
+  el.scrollIntoView({ behavior:'smooth', block:'nearest' });
 }
 
-function closeResult() {
-  document.getElementById('overlay').classList.remove('show');
-}
-
-// ===== Cooldown =====
 function startCooldown() {
   const wrap = document.getElementById('cd-wrap');
   const bar  = document.getElementById('cd-bar');
-  wrap.style.display = 'block';
-  bar.style.transition = 'none';
-  bar.style.width = '100%';
-
-  setTimeout(() => {
-    bar.style.transition = `width ${COOLDOWN}s linear`;
-    bar.style.width = '0%';
-  }, 50);
-
-  setTimeout(() => {
-    isSpinning = false;
-    document.getElementById('spin-btn').disabled = false;
-    wrap.style.display = 'none';
-    bar.style.width = '100%';
-  }, COOLDOWN * 1000);
+  wrap.style.display='block';
+  bar.style.transition='none'; bar.style.width='100%';
+  setTimeout(()=>{ bar.style.transition=`width ${COOLDOWN}s linear`; bar.style.width='0%'; },50);
+  setTimeout(()=>{
+    isSpinning=false;
+    document.getElementById('spin-btn').disabled=false;
+    wrap.style.display='none'; bar.style.width='100%';
+  }, COOLDOWN*1000);
 }
 
 // ===== Confetti =====
 function launchConfetti() {
-  const colors = ['#ffd200','#27ae60','#3498db','#e74c3c','#9b59b6','#f39c12'];
-  for (let i = 0; i < 60; i++) {
-    const el = document.createElement('div');
-    el.className = 'confetti-piece';
-    el.style.left = Math.random() * 100 + 'vw';
-    el.style.background = colors[Math.floor(Math.random() * colors.length)];
-    el.style.width  = (8 + Math.random() * 8) + 'px';
-    el.style.height = (12 + Math.random() * 8) + 'px';
-    el.style.animationDuration = (2 + Math.random() * 2) + 's';
-    el.style.animationDelay   = (Math.random() * 0.5) + 's';
+  const colors=['#ffd200','#27ae60','#3498db','#e74c3c','#9b59b6','#f39c12'];
+  for(let i=0;i<55;i++) {
+    const el=document.createElement('div');
+    el.className='confetti-piece';
+    el.style.left=Math.random()*100+'vw';
+    el.style.background=colors[Math.floor(Math.random()*colors.length)];
+    el.style.width=(8+Math.random()*8)+'px';
+    el.style.height=(12+Math.random()*8)+'px';
+    el.style.animationDuration=(2+Math.random()*2)+'s';
+    el.style.animationDelay=(Math.random()*0.5)+'s';
     document.body.appendChild(el);
-    setTimeout(() => el.remove(), 5000);
+    setTimeout(()=>el.remove(),5000);
   }
 }
 
-// ===== Toast =====
-function showToast(msg) {
-  const t = document.createElement('div');
-  t.textContent = msg;
-  Object.assign(t.style, {
-    position:'fixed', bottom:'80px', left:'50%', transform:'translateX(-50%)',
-    background:'rgba(0,0,0,0.85)', color:'#fff', padding:'10px 20px',
-    borderRadius:'20px', fontSize:'14px', zIndex:999, whiteSpace:'nowrap',
-    boxShadow:'0 4px 15px rgba(0,0,0,0.4)'
-  });
-  document.body.appendChild(t);
-  setTimeout(() => t.remove(), 2500);
-}
-
-// ===== Particles background =====
-(function() {
-  const cvs = document.getElementById('particles');
-  const c   = cvs.getContext('2d');
-  cvs.width  = window.innerWidth;
-  cvs.height = window.innerHeight;
-  const pts = Array.from({length: 60}, () => ({
-    x: Math.random() * cvs.width,
-    y: Math.random() * cvs.height,
-    r: Math.random() * 2 + 0.5,
-    dx: (Math.random() - 0.5) * 0.4,
-    dy: -(Math.random() * 0.5 + 0.2),
-    alpha: Math.random() * 0.5 + 0.2
+// ===== Particles =====
+(function(){
+  const c=document.getElementById('particles'),ctx2=c.getContext('2d');
+  c.width=window.innerWidth; c.height=window.innerHeight;
+  const pts=Array.from({length:50},()=>({
+    x:Math.random()*c.width, y:Math.random()*c.height,
+    r:Math.random()*2+0.5,
+    dx:(Math.random()-0.5)*0.35, dy:-(Math.random()*0.45+0.15),
+    a:Math.random()*0.4+0.15
   }));
-  function tick() {
-    c.clearRect(0, 0, cvs.width, cvs.height);
-    pts.forEach(p => {
-      p.x += p.dx; p.y += p.dy;
-      if (p.y < -5) { p.y = cvs.height + 5; p.x = Math.random() * cvs.width; }
-      c.beginPath();
-      c.arc(p.x, p.y, p.r, 0, Math.PI*2);
-      c.fillStyle = `rgba(255,210,0,${p.alpha})`;
-      c.fill();
+  function tick(){
+    ctx2.clearRect(0,0,c.width,c.height);
+    pts.forEach(p=>{
+      p.x+=p.dx; p.y+=p.dy;
+      if(p.y<-5){p.y=c.height+5; p.x=Math.random()*c.width;}
+      ctx2.beginPath(); ctx2.arc(p.x,p.y,p.r,0,Math.PI*2);
+      ctx2.fillStyle=`rgba(255,210,0,${p.a})`; ctx2.fill();
     });
     requestAnimationFrame(tick);
   }
   tick();
-  window.addEventListener('resize', () => {
-    cvs.width = window.innerWidth;
-    cvs.height = window.innerHeight;
-  });
+  window.addEventListener('resize',()=>{c.width=window.innerWidth;c.height=window.innerHeight;});
 })();
-
-// Set theme color
-if (tg) {
-  tg.setHeaderColor('#0f0c29');
-  tg.setBackgroundColor('#0f0c29');
-}
 </script>
 </body>
 </html>
