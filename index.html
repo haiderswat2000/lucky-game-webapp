@@ -434,16 +434,19 @@ function drawWheel(rot) {
     );
     ctx.rotate(midAngle + Math.PI/2); // النص عمودي باتجاه الخارج
 
-    // ظل قوي للوضوح
-    ctx.shadowColor = 'rgba(0,0,0,0.9)';
-    ctx.shadowBlur  = 6;
-    ctx.shadowOffsetX = 1;
-    ctx.shadowOffsetY = 1;
-
-    ctx.fillStyle   = '#ffffff';
     ctx.font        = 'bold 13px Arial';
     ctx.textAlign   = 'center';
     ctx.textBaseline= 'middle';
+
+    // إطار أسود سميك حول الكلمات
+    ctx.shadowColor   = 'transparent';
+    ctx.strokeStyle   = '#000000';
+    ctx.lineWidth     = 4;
+    ctx.lineJoin      = 'round';
+    ctx.strokeText(s.label, 0, 0);
+
+    // النص الأبيض فوق الإطار
+    ctx.fillStyle = '#ffffff';
     ctx.fillText(s.label, 0, 0);
     ctx.restore();
   });
