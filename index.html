@@ -434,20 +434,29 @@ function drawWheel(rot) {
     );
     ctx.rotate(midAngle + Math.PI/2); // النص عمودي باتجاه الخارج
 
-    ctx.font        = 'bold 13px Arial';
     ctx.textAlign   = 'center';
     ctx.textBaseline= 'middle';
 
-    // إطار أسود سميك حول الكلمات
-    ctx.shadowColor   = 'transparent';
-    ctx.strokeStyle   = '#000000';
-    ctx.lineWidth     = 4;
-    ctx.lineJoin      = 'round';
-    ctx.strokeText(s.label, 0, 0);
+    // فصل الإيموجي عن النص العربي
+    const parts  = s.label.split(' ');
+    const emoji  = parts[0] || '';
+    const arabic = parts.slice(1).join(' ');
 
-    // النص الأبيض فوق الإطار
+    // ---- رسم النص العربي بإطار أسود ----
+    ctx.font     = 'bold 14px Arial';
+    ctx.lineJoin = 'round';
+    // طبقة الإطار الأسود (5px)
+    ctx.strokeStyle = '#000000';
+    ctx.lineWidth   = 5;
+    ctx.strokeText(arabic, 0, 4);
+    // طبقة النص الأبيض
     ctx.fillStyle = '#ffffff';
-    ctx.fillText(s.label, 0, 0);
+    ctx.fillText(arabic, 0, 4);
+
+    // ---- رسم الإيموجي فوق (بدون إطار) ----
+    ctx.font      = '13px Arial';
+    ctx.fillStyle = '#ffffff';
+    ctx.fillText(emoji, 0, -10);
     ctx.restore();
   });
 
