@@ -529,14 +529,17 @@ function _updateAdminUI(d) {
 async function loadAdminStats() {
   if (!initData) return;
   document.getElementById('adm-loading').style.display = 'block';
+  const ctrl    = new AbortController();
+  const timeout = setTimeout(() => ctrl.abort(), 10000);
   try {
     const url = `${API}/api/lucky/admin/stats?init_data=${encodeURIComponent(initData)}&period=${currentPeriod}`;
-    const r   = await fetch(url);
+    const r   = await fetch(url, { signal: ctrl.signal });
     const d   = await r.json();
-    _updateAdminUI(d.error ? {active_now:0,active_today:0,profit:0,loss:0,total_games:0,label:''} : d);
+    _updateAdminUI(d.error ? {active_now:0,active_today:0,profit:0,loss:0,total_games:0,label:'لا صلاحية'} : d);
   } catch(e) {
     _updateAdminUI({active_now:0,active_today:0,profit:0,loss:0,total_games:0,label:'خطأ في الاتصال'});
   } finally {
+    clearTimeout(timeout);
     document.getElementById('adm-loading').style.display = 'none';
   }
 }
