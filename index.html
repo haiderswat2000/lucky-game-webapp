@@ -211,10 +211,11 @@
     .res-sub   { font-size: 14px; color: rgba(255,255,255,0.7); }
 
     /* ===== Stats panel ===== */
-    .stats-panel { width: 92%; max-width: 380px; margin-top: 16px; }
+    /* ===== Stats Panel ===== */
+    .stats-panel { width: 92%; max-width: 400px; margin-top: 16px; }
     .stats-header {
       display: flex; justify-content: space-between; align-items: center;
-      margin-bottom: 12px;
+      margin-bottom: 14px;
     }
     .stats-header h3 { font-size: 16px; font-weight: 700; }
     .refresh-btn {
@@ -226,30 +227,88 @@
     }
     .refresh-btn:active { transform: scale(0.95); }
 
-    .big-stat {
+    /* بطاقة اللاعب الحالي */
+    .my-card {
+      background: linear-gradient(135deg, rgba(247,151,30,0.18), rgba(255,210,0,0.10));
+      border: 1px solid rgba(247,151,30,0.4);
+      border-radius: 18px;
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+    .my-avatar {
+      width: 62px; height: 62px;
+      border-radius: 50%;
+      border: 2.5px solid #ffd200;
+      object-fit: cover;
+      flex-shrink: 0;
+      background: rgba(255,255,255,0.1);
+    }
+    .my-avatar-placeholder {
+      width: 62px; height: 62px;
+      border-radius: 50%;
+      border: 2.5px solid #ffd200;
+      background: linear-gradient(135deg,#f7971e,#ffd200);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 26px; flex-shrink: 0;
+    }
+    .my-info { flex: 1; min-width: 0; }
+    .my-name { font-size: 15px; font-weight: 700; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .my-balance { font-size: 20px; font-weight: 800; color: #ffd200; margin-bottom: 6px; }
+    .my-mini-stats { display: flex; gap: 10px; }
+    .my-mini-stat { font-size: 11px; color: rgba(255,255,255,0.65); }
+    .my-mini-stat span { font-weight: 700; color: #fff; }
+
+    /* إجمالي المشاركين */
+    .total-box {
       background: rgba(255,255,255,0.06);
       border: 1px solid rgba(255,255,255,0.1);
       border-radius: 14px;
-      padding: 16px;
-      text-align: center;
-      margin-bottom: 14px;
+      padding: 12px 16px;
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 16px;
     }
-    .big-stat-num { font-size: 36px; font-weight: 800; color: #ffd200; }
-    .big-stat-lbl { font-size: 13px; color: rgba(255,255,255,0.6); margin-top: 2px; }
+    .total-box-lbl { font-size: 13px; color: rgba(255,255,255,0.6); }
+    .total-box-num { font-size: 24px; font-weight: 800; color: #ffd200; }
 
+    /* قائمة الفائزين */
+    .lb-title { font-size: 14px; font-weight: 700; color: rgba(255,255,255,0.75); margin-bottom: 10px; }
     .winners-list { display: flex; flex-direction: column; gap: 8px; }
     .winner-item {
       background: rgba(255,255,255,0.05);
       border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 12px;
-      padding: 12px 14px;
+      border-radius: 14px;
+      padding: 10px 14px;
       display: flex;
-      justify-content: space-between;
       align-items: center;
+      gap: 10px;
+      transition: background 0.2s;
     }
-    .winner-rank { font-size: 18px; width: 30px; }
-    .winner-id   { font-size: 13px; color: rgba(255,255,255,0.6); flex: 1; }
-    .winner-pts  { font-size: 14px; font-weight: 700; color: #2ecc71; }
+    .winner-item:first-child { background: rgba(255,210,0,0.10); border-color: rgba(255,210,0,0.3); }
+    .winner-item:nth-child(2) { background: rgba(192,192,192,0.08); border-color: rgba(192,192,192,0.25); }
+    .winner-item:nth-child(3) { background: rgba(205,127,50,0.10); border-color: rgba(205,127,50,0.25); }
+    .winner-rank { font-size: 20px; width: 28px; text-align: center; flex-shrink: 0; }
+    .winner-avatar {
+      width: 38px; height: 38px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 1.5px solid rgba(255,255,255,0.2);
+      flex-shrink: 0;
+      background: rgba(255,255,255,0.1);
+    }
+    .winner-avatar-placeholder {
+      width: 38px; height: 38px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #6c3483, #2980b9);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px; flex-shrink: 0;
+      border: 1.5px solid rgba(255,255,255,0.2);
+    }
+    .winner-info { flex: 1; min-width: 0; }
+    .winner-name { font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .winner-pts  { font-size: 12px; font-weight: 700; color: #2ecc71; margin-top: 1px; }
 
     .loading-txt { text-align: center; color: rgba(255,255,255,0.4); padding: 30px; font-size: 14px; }
 
@@ -446,14 +505,32 @@
   <div class="panel" id="panel-stats">
     <div class="stats-panel">
       <div class="stats-header">
-        <h3>📊 إحصائيات المشاركين</h3>
+        <h3>📊 الإحصائيات</h3>
         <button class="refresh-btn" onclick="loadStats()">🔄 تحديث</button>
       </div>
-      <div class="big-stat">
-        <div class="big-stat-num" id="stat-participants">-</div>
-        <div class="big-stat-lbl">إجمالي المشاركين في اللعبة</div>
+
+      <!-- بطاقة اللاعب الحالي -->
+      <div class="my-card" id="my-card">
+        <div class="my-avatar-placeholder">⏳</div>
+        <div class="my-info">
+          <div class="my-name">جاري التحميل...</div>
+          <div class="my-balance">-</div>
+          <div class="my-mini-stats">
+            <div class="my-mini-stat">فوز <span id="my-wins">-</span></div>
+            <div class="my-mini-stat">خسارة <span id="my-losses">-</span></div>
+            <div class="my-mini-stat">جولات <span id="my-games">-</span></div>
+          </div>
+        </div>
       </div>
-      <h3 style="font-size:14px; color:rgba(255,255,255,0.7); margin-bottom:10px;">🏆 آخر 10 فائزين</h3>
+
+      <!-- إجمالي المشاركين -->
+      <div class="total-box">
+        <div class="total-box-lbl">👥 إجمالي المشاركين</div>
+        <div class="total-box-num" id="stat-participants">-</div>
+      </div>
+
+      <!-- المتصدرون -->
+      <div class="lb-title">🏆 أكثر الفائزين</div>
       <div class="winners-list" id="winners-list">
         <div class="loading-txt">⏳ جاري التحميل...</div>
       </div>
@@ -707,22 +784,59 @@ async function refreshBalance() {
 refreshBalance();
 
 // ===== Stats =====
+function _avatarEl(photoUrl, size, emoji) {
+  if (photoUrl) {
+    return `<img class="${size === 'big' ? 'my-avatar' : 'winner-avatar'}" src="${photoUrl}" onerror="this.outerHTML='<div class=\\'${size === 'big' ? 'my-avatar-placeholder' : 'winner-avatar-placeholder'}\\'>${emoji}</div>'">`;
+  }
+  return `<div class="${size === 'big' ? 'my-avatar-placeholder' : 'winner-avatar-placeholder'}">${emoji}</div>`;
+}
+
 async function loadStats() {
   document.getElementById('winners-list').innerHTML = '<div class="loading-txt">⏳ جاري التحميل...</div>';
+  // بطاقة اللاعب + قائمة الفائزين معاً
+  const [meRes, statsRes] = await Promise.allSettled([
+    initData ? fetch(`${API}/api/lucky/me?init_data=${encodeURIComponent(initData)}`) : Promise.reject(),
+    fetch(`${API}/api/lucky/stats`)
+  ]);
+
+  // بطاقة اللاعب الحالي
   try {
-    const r = await fetch(`${API}/api/lucky/stats`);
-    const d = await r.json();
-    document.getElementById('stat-participants').textContent = (d.participants||0).toLocaleString('ar');
+    const me = await meRes.value.json();
+    const card = document.getElementById('my-card');
+    card.innerHTML = `
+      ${_avatarEl(me.photo_url, 'big', '🎮')}
+      <div class="my-info">
+        <div class="my-name">${me.name || 'لاعب'}</div>
+        <div class="my-balance">${fmtPts(me.balance)}</div>
+        <div class="my-mini-stats">
+          <div class="my-mini-stat">فوز <span>${(me.wins||0).toLocaleString('de-DE')}</span></div>
+          <div class="my-mini-stat">خسارة <span>${(me.losses||0).toLocaleString('de-DE')}</span></div>
+          <div class="my-mini-stat">جولات <span>${(me.games||0).toLocaleString('de-DE')}</span></div>
+        </div>
+      </div>`;
+  } catch(e) {
+    document.getElementById('my-card').innerHTML = `
+      <div class="my-avatar-placeholder">🎮</div>
+      <div class="my-info"><div class="my-name">بياناتك</div><div class="my-balance">${fmtPts(balance)}</div></div>`;
+  }
+
+  // قائمة الفائزين
+  try {
+    const d = await statsRes.value.json();
+    document.getElementById('stat-participants').textContent = (d.participants||0).toLocaleString('de-DE');
     const list = document.getElementById('winners-list');
     if (!d.last10 || d.last10.length === 0) {
       list.innerHTML = '<div class="loading-txt">لا يوجد فائزون بعد</div>';
       return;
     }
-    list.innerHTML = d.last10.map((w,i) => `
+    list.innerHTML = d.last10.map((w, i) => `
       <div class="winner-item">
-        <span class="winner-rank">${MEDALS[i]||'#'+(i+1)}</span>
-        <span class="winner-id">${w.uid}</span>
-        <span class="winner-pts">+${w.total_won.toLocaleString('ar')} نقطة</span>
+        <span class="winner-rank">${MEDALS[i] || '#' + (i+1)}</span>
+        ${_avatarEl(w.photo_url, 'sm', '🏆')}
+        <div class="winner-info">
+          <div class="winner-name">${w.name || 'لاعب#' + w.uid}</div>
+          <div class="winner-pts">+${(w.total_won||0).toLocaleString('de-DE')} نقطة</div>
+        </div>
       </div>`).join('');
   } catch(e) {
     document.getElementById('winners-list').innerHTML = '<div class="loading-txt">⚠️ تعذّر التحميل</div>';
