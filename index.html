@@ -566,6 +566,32 @@ async function loadAdminStats() {
 
 checkAdmin();
 
+// ===== Presence tracking =====
+function pingPresence() {
+  if (!initData) return;
+  fetch(`${API}/api/lucky/ping?init_data=${encodeURIComponent(initData)}`)
+    .catch(() => {});
+}
+
+function leavePresence() {
+  if (!initData) return;
+  // sendBeacon مضمون حتى عند إغلاق الصفحة
+  const url = `${API}/api/lucky/leave?init_data=${encodeURIComponent(initData)}`;
+  try { navigator.sendBeacon(url); } catch(e) {}
+}
+
+// ping فوراً عند الفتح
+pingPresence();
+// ping كل 60 ثانية للإبقاء على التسجيل
+setInterval(pingPresence, 60000);
+
+// حذف عند الإغلاق أو إخفاء الصفحة
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'hidden') leavePresence();
+  if (document.visibilityState === 'visible') pingPresence();
+});
+window.addEventListener('pagehide', leavePresence);
+
 // ===== Wheel segments =====
 const SEGS = [
   { label:'🏆 فوز',    color:'#1e8449', light:'#27ae60' },
