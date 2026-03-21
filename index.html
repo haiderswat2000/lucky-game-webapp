@@ -512,26 +512,31 @@ function selectPeriod(btn) {
   loadAdminStats();
 }
 
+function _updateAdminUI(d) {
+  const fmt = n => (n || 0).toLocaleString('ar');
+  document.getElementById('adm-active-now').textContent   = fmt(d.active_now);
+  document.getElementById('adm-active-today').textContent = fmt(d.active_today);
+  document.getElementById('adm-profit').textContent       = fmt(d.profit);
+  document.getElementById('adm-loss').textContent         = fmt(d.loss);
+  document.getElementById('adm-games').textContent        = fmt(d.total_games);
+  document.getElementById('adm-period-label').textContent = `💹 الفترة: ${d.label || currentPeriod}`;
+  const net   = (d.profit || 0) - (d.loss || 0);
+  const netEl = document.getElementById('adm-net');
+  netEl.textContent = (net >= 0 ? '+' : '') + net.toLocaleString('ar');
+  netEl.style.color = net >= 0 ? '#2ecc71' : '#e74c3c';
+}
+
 async function loadAdminStats() {
-  if (!initData || !isAdmin) return;
+  if (!initData) return;
   document.getElementById('adm-loading').style.display = 'block';
   try {
-    const r = await fetch(`${API}/api/lucky/admin/stats?init_data=${encodeURIComponent(initData)}&period=${currentPeriod}`);
-    if (!r.ok) { document.getElementById('adm-loading').style.display = 'none'; return; }
-    const d = await r.json();
-    const fmt = n => (n||0).toLocaleString('ar');
-    document.getElementById('adm-active-now').textContent   = fmt(d.active_now);
-    document.getElementById('adm-active-today').textContent = fmt(d.active_today);
-    document.getElementById('adm-profit').textContent       = fmt(d.profit);
-    document.getElementById('adm-loss').textContent         = fmt(d.loss);
-    document.getElementById('adm-games').textContent        = fmt(d.total_games);
-    document.getElementById('adm-period-label').textContent = `💹 الفترة: ${d.label||''}`;
-    const net = (d.profit||0) - (d.loss||0);
-    const netEl = document.getElementById('adm-net');
-    netEl.textContent  = (net >= 0 ? '+' : '') + net.toLocaleString('ar');
-    netEl.style.color  = net >= 0 ? '#2ecc71' : '#e74c3c';
-    document.getElementById('adm-loading').style.display = 'none';
+    const url = `${API}/api/lucky/admin/stats?init_data=${encodeURIComponent(initData)}&period=${currentPeriod}`;
+    const r   = await fetch(url);
+    const d   = await r.json();
+    _updateAdminUI(d.error ? {active_now:0,active_today:0,profit:0,loss:0,total_games:0,label:''} : d);
   } catch(e) {
+    _updateAdminUI({active_now:0,active_today:0,profit:0,loss:0,total_games:0,label:'خطأ في الاتصال'});
+  } finally {
     document.getElementById('adm-loading').style.display = 'none';
   }
 }
