@@ -253,6 +253,40 @@
 
     .loading-txt { text-align: center; color: rgba(255,255,255,0.4); padding: 30px; font-size: 14px; }
 
+    /* ===== Admin Panel ===== */
+    .admin-panel { width: 92%; max-width: 380px; margin-top: 16px; }
+    .period-filters { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
+    .period-btn {
+      flex: 1; min-width: 58px;
+      padding: 8px 6px;
+      border: 1px solid rgba(255,255,255,0.18);
+      border-radius: 10px;
+      background: rgba(255,255,255,0.07);
+      color: #fff; font-size: 12px; font-weight: 600;
+      cursor: pointer; transition: all 0.2s;
+    }
+    .period-btn.active {
+      background: linear-gradient(135deg, #f7971e, #ffd200);
+      color: #1a1a1a; border-color: transparent;
+      box-shadow: 0 2px 8px rgba(247,151,30,0.4);
+    }
+    .admin-stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+    .admin-stat-card {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 14px; padding: 14px 10px; text-align: center;
+    }
+    .admin-stat-card.profit { border-color: rgba(46,204,113,0.35); }
+    .admin-stat-card.loss   { border-color: rgba(231,76,60,0.35); }
+    .admin-card-icon { font-size: 20px; }
+    .admin-card-num  { font-size: 17px; font-weight: 800; margin: 5px 0 3px; }
+    .admin-card-lbl  { font-size: 10px; color: rgba(255,255,255,0.5); }
+    .adm-section-title {
+      font-size: 13px; font-weight: 700;
+      color: rgba(255,255,255,0.6);
+      margin: 10px 0 8px;
+    }
+
     /* ===== Spinning glow ===== */
     .spinning { animation: glowRing 0.4s ease-in-out infinite alternate; }
     @keyframes glowRing {
@@ -287,8 +321,9 @@
 
   <!-- Tabs -->
   <div class="tabs">
-    <button class="tab-btn active" onclick="switchTab('game')">🎮 اللعبة</button>
-    <button class="tab-btn"       onclick="switchTab('stats')">📊 الإحصائيات</button>
+    <button class="tab-btn active" onclick="switchTab('game',this)">🎮 اللعبة</button>
+    <button class="tab-btn"       onclick="switchTab('stats',this)">📊 الإحصائيات</button>
+    <button class="tab-btn" id="admin-tab-btn" style="display:none" onclick="switchTab('admin',this)">⚙️ إعدادات</button>
   </div>
 
   <!-- ===== GAME PANEL ===== -->
@@ -342,6 +377,71 @@
 
   </div>
 
+  <!-- ===== ADMIN PANEL ===== -->
+  <div class="panel" id="panel-admin">
+    <div class="admin-panel">
+      <div class="stats-header">
+        <h3>⚙️ لوحة الأدمن</h3>
+        <button class="refresh-btn" onclick="loadAdminStats()">🔄 تحديث</button>
+      </div>
+
+      <!-- فلاتر الفترة الزمنية -->
+      <div class="period-filters">
+        <button class="period-btn active" data-period="TODAY"     onclick="selectPeriod(this)">اليوم</button>
+        <button class="period-btn"        data-period="YESTERDAY" onclick="selectPeriod(this)">البارحة</button>
+        <button class="period-btn"        data-period="DAY2"      onclick="selectPeriod(this)">أول البارحة</button>
+        <button class="period-btn"        data-period="W7"        onclick="selectPeriod(this)">7 أيام</button>
+        <button class="period-btn"        data-period="ALL"       onclick="selectPeriod(this)">الكل</button>
+      </div>
+
+      <!-- اللاعبون -->
+      <div class="adm-section-title">👥 اللاعبون</div>
+      <div class="admin-stat-grid">
+        <div class="admin-stat-card">
+          <div class="admin-card-icon">🟢</div>
+          <div class="admin-card-num" id="adm-active-now">-</div>
+          <div class="admin-card-lbl">نشطون الآن</div>
+        </div>
+        <div class="admin-stat-card">
+          <div class="admin-card-icon">📅</div>
+          <div class="admin-card-num" id="adm-active-today">-</div>
+          <div class="admin-card-lbl">نشطون اليوم</div>
+        </div>
+      </div>
+
+      <!-- الأرباح والخسائر -->
+      <div class="adm-section-title" id="adm-period-label">💹 الفترة: اليوم</div>
+      <div class="admin-stat-grid">
+        <div class="admin-stat-card profit">
+          <div class="admin-card-icon">💰</div>
+          <div class="admin-card-num" id="adm-profit" style="color:#2ecc71">-</div>
+          <div class="admin-card-lbl">أرباح البوت</div>
+        </div>
+        <div class="admin-stat-card loss">
+          <div class="admin-card-icon">📤</div>
+          <div class="admin-card-num" id="adm-loss" style="color:#e74c3c">-</div>
+          <div class="admin-card-lbl">خسائر البوت</div>
+        </div>
+      </div>
+
+      <!-- الإجمالي وعدد الجولات -->
+      <div class="admin-stat-grid">
+        <div class="admin-stat-card">
+          <div class="admin-card-icon">⚖️</div>
+          <div class="admin-card-num" id="adm-net">-</div>
+          <div class="admin-card-lbl">الإجمالي الصافي</div>
+        </div>
+        <div class="admin-stat-card">
+          <div class="admin-card-icon">🎮</div>
+          <div class="admin-card-num" id="adm-games">-</div>
+          <div class="admin-card-lbl">عدد الجولات</div>
+        </div>
+      </div>
+
+      <div class="loading-txt" id="adm-loading" style="display:none">⏳ جاري التحميل...</div>
+    </div>
+  </div>
+
   <!-- ===== STATS PANEL ===== -->
   <div class="panel" id="panel-stats">
     <div class="stats-panel">
@@ -380,13 +480,63 @@ let plays=0, wins=0, loses=0;
 const initData   = tg?.initData || "";
 
 // ===== Tabs =====
-function switchTab(name) {
+function switchTab(name, btn) {
   document.querySelectorAll('.panel').forEach(p => p.classList.remove('show'));
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
   document.getElementById('panel-' + name).classList.add('show');
-  event.currentTarget.classList.add('active');
-  if (name === 'stats') loadStats();
+  btn.classList.add('active');
+  if (name === 'stats')  loadStats();
+  if (name === 'admin')  loadAdminStats();
 }
+
+// ===== Admin =====
+let currentPeriod = 'TODAY';
+let isAdmin = false;
+
+async function checkAdmin() {
+  if (!initData) return;
+  try {
+    const r = await fetch(`${API}/api/lucky/admin/check?init_data=${encodeURIComponent(initData)}`);
+    const d = await r.json();
+    if (d.is_admin) {
+      isAdmin = true;
+      document.getElementById('admin-tab-btn').style.display = '';
+    }
+  } catch(e) {}
+}
+
+function selectPeriod(btn) {
+  document.querySelectorAll('.period-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  currentPeriod = btn.dataset.period;
+  loadAdminStats();
+}
+
+async function loadAdminStats() {
+  if (!initData || !isAdmin) return;
+  document.getElementById('adm-loading').style.display = 'block';
+  try {
+    const r = await fetch(`${API}/api/lucky/admin/stats?init_data=${encodeURIComponent(initData)}&period=${currentPeriod}`);
+    if (!r.ok) { document.getElementById('adm-loading').style.display = 'none'; return; }
+    const d = await r.json();
+    const fmt = n => (n||0).toLocaleString('ar');
+    document.getElementById('adm-active-now').textContent   = fmt(d.active_now);
+    document.getElementById('adm-active-today').textContent = fmt(d.active_today);
+    document.getElementById('adm-profit').textContent       = fmt(d.profit);
+    document.getElementById('adm-loss').textContent         = fmt(d.loss);
+    document.getElementById('adm-games').textContent        = fmt(d.total_games);
+    document.getElementById('adm-period-label').textContent = `💹 الفترة: ${d.label||''}`;
+    const net = (d.profit||0) - (d.loss||0);
+    const netEl = document.getElementById('adm-net');
+    netEl.textContent  = (net >= 0 ? '+' : '') + net.toLocaleString('ar');
+    netEl.style.color  = net >= 0 ? '#2ecc71' : '#e74c3c';
+    document.getElementById('adm-loading').style.display = 'none';
+  } catch(e) {
+    document.getElementById('adm-loading').style.display = 'none';
+  }
+}
+
+checkAdmin();
 
 // ===== Wheel segments =====
 const SEGS = [
