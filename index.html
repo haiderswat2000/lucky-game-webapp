@@ -533,7 +533,7 @@ function selectPeriod(btn) {
 }
 
 function _updateAdminUI(d) {
-  const fmt = n => (n || 0).toLocaleString('ar');
+  const fmt = n => Number(n || 0).toLocaleString('de-DE');
   document.getElementById('adm-active-now').textContent   = fmt(d.active_now);
   document.getElementById('adm-active-today').textContent = fmt(d.active_today);
   document.getElementById('adm-profit').textContent       = fmt(d.profit);
@@ -689,9 +689,12 @@ STAKES.forEach(s => {
 });
 
 // ===== Balance =====
+function fmtPts(n) {
+  return Number(n || 0).toLocaleString('de-DE') + ' نقطة';
+}
 function updateBalanceUI(v) {
   balance = v;
-  document.getElementById('balance-display').textContent = '💰 ' + v.toLocaleString('ar');
+  document.getElementById('balance-display').textContent = '💰 ' + fmtPts(v);
 }
 async function refreshBalance() {
   if (!initData) return;
