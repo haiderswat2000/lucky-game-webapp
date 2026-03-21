@@ -485,13 +485,33 @@ function switchTab(name, btn) {
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
   document.getElementById('panel-' + name).classList.add('show');
   btn.classList.add('active');
-  if (name === 'stats')  loadStats();
-  if (name === 'admin')  loadAdminStats();
+  if (name === 'stats') loadStats();
+  if (name === 'admin') {
+    loadAdminStats();
+    startAdminAutoRefresh();
+  } else {
+    stopAdminAutoRefresh();
+  }
 }
 
 // ===== Admin =====
 let currentPeriod = 'TODAY';
 let isAdmin = false;
+let adminRefreshTimer = null;
+
+function startAdminAutoRefresh() {
+  stopAdminAutoRefresh();
+  adminRefreshTimer = setInterval(() => {
+    if (isAdmin) loadAdminStats();
+  }, 15000); // كل 15 ثانية
+}
+
+function stopAdminAutoRefresh() {
+  if (adminRefreshTimer) {
+    clearInterval(adminRefreshTimer);
+    adminRefreshTimer = null;
+  }
+}
 
 async function checkAdmin() {
   if (!initData) return;
