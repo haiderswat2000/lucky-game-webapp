@@ -311,6 +311,79 @@
 
     .loading-txt { text-align: center; color: rgba(255,255,255,0.4); padding: 30px; font-size: 14px; }
 
+    /* ===== User Detail Modal ===== */
+    .modal-overlay {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.75);
+      backdrop-filter: blur(6px);
+      z-index: 500;
+      display: flex; align-items: center; justify-content: center;
+      padding: 20px;
+      animation: fadeIn 0.2s ease;
+    }
+    @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+    .modal-overlay.hidden { display: none; }
+    .modal-card {
+      background: linear-gradient(145deg, #1e1b3a, #2d2b55);
+      border: 1px solid rgba(255,210,0,0.3);
+      border-radius: 22px;
+      padding: 24px 20px;
+      width: 100%; max-width: 360px;
+      position: relative;
+      animation: slideUp 0.25s ease;
+    }
+    @keyframes slideUp { from { transform:translateY(30px); opacity:0; } to { transform:translateY(0); opacity:1; } }
+    .modal-close {
+      position: absolute; top: 14px; left: 14px;
+      background: rgba(255,255,255,0.1);
+      border: none; border-radius: 50%;
+      width: 32px; height: 32px;
+      color: #fff; font-size: 16px;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      transition: background 0.2s;
+    }
+    .modal-close:hover { background: rgba(255,255,255,0.2); }
+    .modal-user-header {
+      display: flex; align-items: center; gap: 14px;
+      margin-bottom: 20px;
+    }
+    .modal-avatar {
+      width: 56px; height: 56px; border-radius: 50%;
+      border: 2px solid #ffd200;
+      object-fit: cover; flex-shrink: 0;
+      background: rgba(255,255,255,0.1);
+    }
+    .modal-avatar-placeholder {
+      width: 56px; height: 56px; border-radius: 50%;
+      border: 2px solid #ffd200;
+      background: linear-gradient(135deg,#6c3483,#2980b9);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 24px; flex-shrink: 0;
+    }
+    .modal-username { font-size: 16px; font-weight: 700; }
+    .modal-uid { font-size: 11px; color: rgba(255,255,255,0.4); margin-top: 3px; }
+    .modal-stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .modal-stat {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 14px;
+      padding: 12px 10px; text-align: center;
+    }
+    .modal-stat.highlight { border-color: rgba(255,210,0,0.35); }
+    .modal-stat-icon { font-size: 18px; }
+    .modal-stat-val { font-size: 15px; font-weight: 800; margin: 5px 0 3px; }
+    .modal-stat-lbl { font-size: 10px; color: rgba(255,255,255,0.5); }
+    .modal-active-badge {
+      margin-top: 14px; text-align: center;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 13px; font-weight: 700;
+    }
+    .modal-active-badge.online  { background: rgba(39,174,96,0.2);  border: 1px solid #27ae60; color: #2ecc71; }
+    .modal-active-badge.offline { background: rgba(231,76,60,0.15); border: 1px solid #e74c3c; color: #e74c3c; }
+    .winner-item.clickable { cursor: pointer; }
+    .winner-item.clickable:hover { background: rgba(255,255,255,0.1) !important; border-color: rgba(255,210,0,0.4) !important; }
+
     /* ===== Admin Panel ===== */
     .admin-panel { width: 92%; max-width: 380px; margin-top: 16px; }
     .period-filters { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
@@ -538,6 +611,43 @@
 
 </div>
 
+<!-- ===== User Detail Modal (Admin) ===== -->
+<div class="modal-overlay hidden" id="user-modal" onclick="closeUserModal(event)">
+  <div class="modal-card">
+    <button class="modal-close" onclick="document.getElementById('user-modal').classList.add('hidden')">✕</button>
+    <div class="modal-user-header">
+      <div id="modal-avatar-wrap"><div class="modal-avatar-placeholder">🎮</div></div>
+      <div>
+        <div class="modal-username" id="modal-username">...</div>
+        <div class="modal-uid" id="modal-uid"></div>
+      </div>
+    </div>
+    <div class="modal-stats-grid">
+      <div class="modal-stat highlight">
+        <div class="modal-stat-icon">💰</div>
+        <div class="modal-stat-val" id="modal-balance">-</div>
+        <div class="modal-stat-lbl">النقاط الحالية</div>
+      </div>
+      <div class="modal-stat">
+        <div class="modal-stat-icon">📦</div>
+        <div class="modal-stat-val" id="modal-initial">-</div>
+        <div class="modal-stat-lbl">النقاط قبل اللعب</div>
+      </div>
+      <div class="modal-stat">
+        <div class="modal-stat-icon">📈</div>
+        <div class="modal-stat-val" id="modal-total-won" style="color:#2ecc71">-</div>
+        <div class="modal-stat-lbl">مجموع الأرباح</div>
+      </div>
+      <div class="modal-stat">
+        <div class="modal-stat-icon">🎮</div>
+        <div class="modal-stat-val" id="modal-games">-</div>
+        <div class="modal-stat-lbl">عدد الجولات</div>
+      </div>
+    </div>
+    <div class="modal-active-badge" id="modal-active-badge">...</div>
+  </div>
+</div>
+
 <script>
 // ===== Setup =====
 const tg      = window.Telegram?.WebApp;
@@ -554,6 +664,19 @@ let isSpinning   = false;
 let rotation     = 0;
 let plays=0, wins=0, loses=0;
 const initData   = tg?.initData || "";
+
+// ===== Security Helpers =====
+function escapeHTML(str) {
+  return String(str ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+// إرسال initData في header بدلاً من URL
+function authFetch(url, opts = {}) {
+  if (!opts.headers) opts.headers = {};
+  opts.headers['X-Tg-Init'] = initData;
+  return fetch(url, opts);
+}
+// بيانات الفائزين (لتجنب XSS في onclick)
+const _winnerMap = {};
 
 // ===== Tabs =====
 function switchTab(name, btn) {
@@ -592,7 +715,7 @@ function stopAdminAutoRefresh() {
 async function checkAdmin() {
   if (!initData) return;
   try {
-    const r = await fetch(`${API}/api/lucky/admin/check?init_data=${encodeURIComponent(initData)}`);
+    const r = await authFetch(`${API}/api/lucky/admin/check`);
     const d = await r.json();
     if (d.is_admin) {
       isAdmin = true;
@@ -628,8 +751,8 @@ async function loadAdminStats() {
   const ctrl    = new AbortController();
   const timeout = setTimeout(() => ctrl.abort(), 10000);
   try {
-    const url = `${API}/api/lucky/admin/stats?init_data=${encodeURIComponent(initData)}&period=${currentPeriod}`;
-    const r   = await fetch(url, { signal: ctrl.signal });
+    const url = `${API}/api/lucky/admin/stats?period=${currentPeriod}`;
+    const r   = await authFetch(url, { signal: ctrl.signal });
     const d   = await r.json();
     _updateAdminUI(d.error ? {active_now:0,active_today:0,profit:0,loss:0,total_games:0,label:'لا صلاحية'} : d);
   } catch(e) {
@@ -645,15 +768,14 @@ checkAdmin();
 // ===== Presence tracking =====
 function pingPresence() {
   if (!initData) return;
-  fetch(`${API}/api/lucky/ping?init_data=${encodeURIComponent(initData)}`)
-    .catch(() => {});
+  authFetch(`${API}/api/lucky/ping`).catch(() => {});
 }
 
 function leavePresence() {
   if (!initData) return;
-  // sendBeacon مضمون حتى عند إغلاق الصفحة
-  const url = `${API}/api/lucky/leave?init_data=${encodeURIComponent(initData)}`;
-  try { navigator.sendBeacon(url); } catch(e) {}
+  // sendBeacon لا يدعم headers — نرسل initData في body بدلاً من URL
+  const blob = new Blob([JSON.stringify({ init_data: initData })], { type: 'application/json' });
+  try { navigator.sendBeacon(`${API}/api/lucky/leave`, blob); } catch(e) {}
 }
 
 // ping فوراً عند الفتح
@@ -775,7 +897,7 @@ function updateBalanceUI(v) {
 async function refreshBalance() {
   if (!initData) return;
   try {
-    const r = await fetch(`${API}/api/lucky/balance?init_data=${encodeURIComponent(initData)}`);
+    const r = await authFetch(`${API}/api/lucky/balance`);
     const d = await r.json();
     if (d.balance !== undefined) updateBalanceUI(d.balance);
   } catch(e) {}
@@ -794,7 +916,7 @@ async function loadStats() {
   document.getElementById('winners-list').innerHTML = '<div class="loading-txt">⏳ جاري التحميل...</div>';
   // بطاقة اللاعب + قائمة الفائزين معاً
   const [meRes, statsRes] = await Promise.allSettled([
-    initData ? fetch(`${API}/api/lucky/me?init_data=${encodeURIComponent(initData)}`) : Promise.reject(),
+    initData ? authFetch(`${API}/api/lucky/me`) : Promise.reject(),
     fetch(`${API}/api/lucky/stats`)
   ]);
 
@@ -805,7 +927,7 @@ async function loadStats() {
     card.innerHTML = `
       ${_avatarEl(me.photo_url, 'big', '🎮')}
       <div class="my-info">
-        <div class="my-name">${me.name || 'لاعب'}</div>
+        <div class="my-name">${escapeHTML(me.name || 'لاعب')}</div>
         <div class="my-balance">${fmtPts(me.balance)}</div>
         <div class="my-mini-stats">
           <div class="my-mini-stat">فوز <span>${(me.wins||0).toLocaleString('de-DE')}</span></div>
@@ -828,12 +950,14 @@ async function loadStats() {
       list.innerHTML = '<div class="loading-txt">لا يوجد فائزون بعد</div>';
       return;
     }
+    // حفظ بيانات الفائزين في Map بدلاً من تمريرها في onclick مباشرة
+    d.last10.forEach(w => { _winnerMap[w.uid] = { name: w.name, photo_url: w.photo_url }; });
     list.innerHTML = d.last10.map((w, i) => `
-      <div class="winner-item">
+      <div class="winner-item${isAdmin ? ' clickable' : ''}" ${isAdmin ? `onclick="showUserStats('${escapeHTML(String(w.uid))}')"` : ''}>
         <span class="winner-rank">${MEDALS[i] || '#' + (i+1)}</span>
         ${_avatarEl(w.photo_url, 'sm', '🏆')}
         <div class="winner-info">
-          <div class="winner-name">${w.name || 'لاعب#' + w.uid}</div>
+          <div class="winner-name">${escapeHTML(w.name || 'لاعب#' + w.uid)}${isAdmin ? ' <span style="font-size:10px;opacity:0.4">👆</span>' : ''}</div>
           <div class="winner-pts">+${(w.total_won||0).toLocaleString('de-DE')} نقطة</div>
         </div>
       </div>`).join('');
@@ -896,6 +1020,15 @@ async function startSpin() {
   if (isSpinning) return;
   if (!initData) { showResult('error','⚠️','افتح اللعبة من البوت',''); return; }
 
+  // حماية إضافية للكولداون بـ localStorage (طبقة ثانية فوق isSpinning)
+  const now = Date.now();
+  const lastSpin = parseInt(localStorage.getItem('_lgs') || '0');
+  if (now - lastSpin < COOLDOWN * 1000) {
+    const rem = Math.ceil((COOLDOWN * 1000 - (now - lastSpin)) / 1000);
+    showResult('error','⏳','انتظر قليلاً',`المحاولة التالية بعد ${rem} ثانية`);
+    return;
+  }
+
   // تفعيل AudioContext بعد تفاعل المستخدم
   if (audioCtx.state === 'suspended') audioCtx.resume();
 
@@ -932,6 +1065,9 @@ async function startSpin() {
     document.getElementById('spin-btn').disabled = false;
     return;
   }
+
+  // تسجيل وقت الـ spin لحماية الكولداون
+  localStorage.setItem('_lgs', Date.now().toString());
 
   // 2) تحديد القطاع المستهدف + تأثير "كاد يفوز" للخسارة
   const segOptions = { win:[0,3,5], lose:[1,4], retry:[2] };
@@ -1047,6 +1183,74 @@ function launchConfetti() {
     el.style.animationDelay=(Math.random()*0.5)+'s';
     document.body.appendChild(el);
     setTimeout(()=>el.remove(),5000);
+  }
+}
+
+// ===== User Detail Modal (Admin) =====
+function closeUserModal(e) {
+  if (e.target === document.getElementById('user-modal')) {
+    document.getElementById('user-modal').classList.add('hidden');
+  }
+}
+
+async function showUserStats(uid) {
+  if (!isAdmin || !initData) return;
+
+  // جلب بيانات المستخدم من Map (لا نمرر البيانات عبر onclick)
+  const info = _winnerMap[uid] || {};
+  const name = info.name;
+  const photoUrl = info.photo_url;
+
+  // إظهار المودال مع بيانات أولية (textContent آمن من XSS)
+  const modal = document.getElementById('user-modal');
+  document.getElementById('modal-username').textContent = name || ('لاعب #' + uid);
+  document.getElementById('modal-uid').textContent = 'ID: ' + uid;
+  document.getElementById('modal-balance').textContent = '...';
+  document.getElementById('modal-initial').textContent = '...';
+  document.getElementById('modal-total-won').textContent = '...';
+  document.getElementById('modal-games').textContent = '...';
+  document.getElementById('modal-active-badge').textContent = '⏳ جاري التحميل...';
+  document.getElementById('modal-active-badge').className = 'modal-active-badge';
+
+  // الصورة — src تُعقَّم بـ escapeHTML
+  const avatarWrap = document.getElementById('modal-avatar-wrap');
+  if (photoUrl) {
+    const img = document.createElement('img');
+    img.className = 'modal-avatar';
+    img.src = photoUrl;
+    img.onerror = () => { avatarWrap.innerHTML = '<div class="modal-avatar-placeholder">🎮</div>'; };
+    avatarWrap.innerHTML = '';
+    avatarWrap.appendChild(img);
+  } else {
+    avatarWrap.innerHTML = '<div class="modal-avatar-placeholder">🎮</div>';
+  }
+
+  modal.classList.remove('hidden');
+
+  // جلب البيانات من الخادم — initData في header
+  try {
+    const r = await authFetch(`${API}/api/lucky/admin/user/${encodeURIComponent(uid)}`);
+    const d = await r.json();
+    if (d.error) throw new Error(d.error);
+
+    const fmt = n => Number(n || 0).toLocaleString('de-DE');
+    document.getElementById('modal-balance').textContent    = fmt(d.balance) + ' نقطة';
+    document.getElementById('modal-initial').textContent   = fmt(d.initial_balance) + ' نقطة';
+    document.getElementById('modal-total-won').textContent = '+' + fmt(d.total_won) + ' نقطة';
+    document.getElementById('modal-games').textContent     = fmt(d.games) + ' جولة';
+
+    const badge = document.getElementById('modal-active-badge');
+    if (d.is_active) {
+      badge.textContent = '🟢 نشط الآن';
+      badge.className = 'modal-active-badge online';
+    } else {
+      badge.textContent = '⚫ غير نشط';
+      badge.className = 'modal-active-badge offline';
+    }
+  } catch(e) {
+    document.getElementById('modal-balance').textContent  = 'خطأ';
+    document.getElementById('modal-active-badge').textContent = '⚠️ تعذّر التحميل';
+    document.getElementById('modal-active-badge').className   = 'modal-active-badge offline';
   }
 }
 
