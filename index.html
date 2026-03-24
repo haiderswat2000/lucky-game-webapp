@@ -436,9 +436,37 @@
       0%   { transform: translateY(0) rotate(0deg); opacity: 1; }
       100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
     }
+
+    /* ===== Maintenance Screen ===== */
+    #maintenance-screen {
+      display: none;
+      position: fixed; inset: 0;
+      background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+      z-index: 9999;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 40px 24px;
+    }
+    #maintenance-screen.show { display: flex; }
+    .maint-icon { font-size: 72px; margin-bottom: 20px; animation: maintPulse 2s ease-in-out infinite; }
+    @keyframes maintPulse {
+      0%,100% { transform: scale(1); }
+      50%      { transform: scale(1.1); }
+    }
+    .maint-title { font-size: 22px; font-weight: 800; margin-bottom: 12px; }
+    .maint-sub   { font-size: 15px; color: rgba(255,255,255,0.65); line-height: 1.7; }
   </style>
 </head>
 <body>
+
+<!-- Maintenance Screen -->
+<div id="maintenance-screen">
+  <div class="maint-icon">🔧</div>
+  <div class="maint-title">اللعبة في وضع التحديث</div>
+  <div class="maint-sub">نعمل على تحسين التجربة<br>سنعود قريباً، شكراً لصبركم 🙏</div>
+</div>
 
 <canvas id="particles"></canvas>
 
@@ -657,6 +685,17 @@ const COOLDOWN= 5;
 const MEDALS  = ["🥇","🥈","🥉","4️⃣","5️⃣","6️⃣","7️⃣","8️⃣","9️⃣","🔟"];
 
 if (tg) { tg.ready(); tg.expand(); tg.setHeaderColor('#0f0c29'); tg.setBackgroundColor('#0f0c29'); }
+
+// ===== Maintenance Check =====
+(async function checkMaintenance() {
+  try {
+    const r = await fetch(`${API}/api/lucky/maintenance`);
+    const d = await r.json();
+    if (d.maintenance) {
+      document.getElementById('maintenance-screen').classList.add('show');
+    }
+  } catch(e) {}
+})();
 
 let balance      = 0;
 let selectedStake= 500;
