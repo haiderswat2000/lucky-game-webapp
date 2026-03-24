@@ -835,7 +835,7 @@ const SEGS = [
   { label:'🔁 إعادة', color:'#1a5276', light:'#2980b9' },
   { label:'🏆 فوز',   color:'#27ae60', light:'#2ecc71' },
   { label:'❌ خسارة', color:'#c0392b', light:'#e74c3c' },
-  { label:'✨ حظ',    color:'#b7950b', light:'#ffd200' },
+  { label:'🔁 إعادة', color:'#1a5276', light:'#2980b9' },
 ];
 const N = SEGS.length;
 const SA = 360 / N;
@@ -1108,7 +1108,7 @@ async function startSpin() {
   localStorage.setItem('_lgs', Date.now().toString());
 
   // 2) تحديد القطاع المستهدف + تأثير "كاد يفوز" للخسارة
-  const segOptions = { win:[0,3,5], lose:[1,4], retry:[2] };
+  const segOptions = { win:[0,3], lose:[1,4], retry:[2,5] };
   const opts = segOptions[data.outcome] || [2];
   const targetSeg = opts[Math.floor(Math.random() * opts.length)];
 
@@ -1117,7 +1117,7 @@ async function startSpin() {
   let stopAngle = ((360 - (targetSeg + 0.5) * SA) % 360 + 360) % 360;
 
   // تأثير "كاد يفوز": للخسارة، أوقف العجلة قريباً من حافة قطاع الفوز المجاور
-  // القطاعات: 0=فوز, 1=خسارة, 2=إعادة, 3=فوز, 4=خسارة, 5=حظ(فوز)
+  // القطاعات: 0=فوز, 1=خسارة, 2=إعادة, 3=فوز, 4=خسارة, 5=إعادة
   // عند الخسارة على قطاع 1: اقترب من حافة قطاع 0 (فوز) = أضف offset صغير
   // عند الخسارة على قطاع 4: اقترب من حافة قطاع 3 (فوز)
   if (data.outcome === 'lose') {
