@@ -955,7 +955,7 @@ async function loadStats() {
   // بطاقة اللاعب + قائمة الفائزين معاً
   const [meRes, statsRes] = await Promise.allSettled([
     initData ? authFetch(`${API}/api/lucky/me`) : Promise.reject(),
-    fetch(`${API}/api/lucky/stats`)
+    initData ? authFetch(`${API}/api/lucky/stats`) : fetch(`${API}/api/lucky/stats`)
   ]);
 
   // بطاقة اللاعب الحالي
