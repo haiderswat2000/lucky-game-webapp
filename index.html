@@ -437,6 +437,23 @@
       100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
     }
 
+    /* ===== Maintenance Toggle Button ===== */
+    #maintenance-toggle-btn.off {
+      background: linear-gradient(135deg, #e74c3c, #c0392b);
+      color: #fff;
+      box-shadow: 0 4px 15px rgba(231,76,60,0.4);
+    }
+    #maintenance-toggle-btn.on {
+      background: linear-gradient(135deg, #2ecc71, #27ae60);
+      color: #fff;
+      box-shadow: 0 4px 15px rgba(46,204,113,0.4);
+    }
+    #maintenance-toggle-btn.loading {
+      background: rgba(255,255,255,0.1);
+      color: rgba(255,255,255,0.5);
+      cursor: not-allowed;
+    }
+
     /* ===== Maintenance Screen ===== */
     #maintenance-screen {
       display: none;
@@ -598,6 +615,14 @@
       </div>
 
       <div class="loading-txt" id="adm-loading" style="display:none">⏳ جاري التحميل...</div>
+
+      <!-- زر وضع التحديث -->
+      <div class="adm-section-title">🔧 إعدادات اللعبة</div>
+      <button id="maintenance-toggle-btn"
+        onclick="toggleMaintenance()"
+        style="width:100%;padding:14px;border-radius:14px;border:none;font-size:15px;font-weight:800;cursor:pointer;margin-top:4px;transition:all 0.2s;">
+        ⏳ جاري التحقق...
+      </button>
     </div>
   </div>
 
@@ -686,15 +711,55 @@ const MEDALS  = ["🥇","🥈","🥉","4️⃣","5️⃣","6️⃣","7️⃣","8
 
 if (tg) { tg.ready(); tg.expand(); tg.setHeaderColor('#0f0c29'); tg.setBackgroundColor('#0f0c29'); }
 
-// ===== Maintenance Check =====
-(async function checkMaintenance() {
+// ===== Maintenance =====
+let _maintState = false;
+
+async function fetchMaintenanceState() {
   try {
     const r = await fetch(`${API}/api/lucky/maintenance`);
     const d = await r.json();
-    if (d.maintenance) {
-      document.getElementById('maintenance-screen').classList.add('show');
-    }
-  } catch(e) {}
+    return !!d.maintenance;
+  } catch(e) { return false; }
+}
+
+function _applyMaintBtn(on) {
+  const btn = document.getElementById('maintenance-toggle-btn');
+  if (!btn) return;
+  _maintState = on;
+  if (on) {
+    btn.textContent = '✅ إيقاف وضع التحديث';
+    btn.className = 'on';
+  } else {
+    btn.textContent = '🔧 تفعيل وضع التحديث';
+    btn.className = 'off';
+  }
+}
+
+async function toggleMaintenance() {
+  if (!isAdmin) return;
+  const btn = document.getElementById('maintenance-toggle-btn');
+  btn.className = 'loading';
+  btn.textContent = '⏳ جاري...';
+  try {
+    const action = _maintState ? 'off' : 'on';
+    const r = await authFetch(`${API}/api/lucky/maintenance/set`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action })
+    });
+    const d = await r.json();
+    _applyMaintBtn(d.maintenance);
+  } catch(e) {
+    _applyMaintBtn(_maintState);
+  }
+}
+
+(async function checkMaintenance() {
+  const on = await fetchMaintenanceState();
+  if (on) {
+    document.getElementById('maintenance-screen').classList.add('show');
+  }
+  _applyMaintBtn(on);
 })();
 
 let balance      = 0;
