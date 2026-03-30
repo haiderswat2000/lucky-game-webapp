@@ -1100,6 +1100,8 @@ async function startSpin() {
       unauthorized:         ['🔒','غير مصرح','افتح اللعبة من البوت'],
       tx_failed:            ['⚠️','خطأ في العملية','حاول لاحقاً'],
       network:              ['📡','خطأ في الاتصال','تحقق من الإنترنت'],
+      maintenance:          ['🔧','اللعبة في التحديث','سنعود قريباً'],
+      daily_limit:          ['🚫','وصلت للحد اليومي','عد غداً وحظ أوفر!'],
     };
     const [ic,ti,su] = msgs[data.error] || ['⚠️','خطأ','حاول لاحقاً'];
     showResult('error', ic, ti, su);
